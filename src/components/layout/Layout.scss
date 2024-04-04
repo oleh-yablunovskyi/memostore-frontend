@@ -1,0 +1,27 @@
+.layout-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-main {
+  flex-grow: 1;
+  // overflow: auto; // to fix the footer
+}
+
+.layout-section {
+  width: 100%;
+  min-height: 100%;
+  padding: 20px 16px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: 600px) {
+    padding: 20px 30px;
+    max-width: 48rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 20px 50px;
+  }
+}

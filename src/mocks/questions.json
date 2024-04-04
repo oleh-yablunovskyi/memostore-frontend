@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "title": "What is React?",
+    "description": "React is a declarative, efficient, and flexible JavaScript library for building user interfaces. It allows developers to create large web applications that can change data, without reloading the page. The main goal is to be fast, scalable, and simple. It works only on user interfaces in the application. This corresponds to the view in the MVC template. It can be used with a combination of other JavaScript libraries or frameworks, such as Angular JS in MVC."
+  },
+  {
+    "id": 2,
+    "title": "What are components in React?",
+    "description": "Components are the building blocks of any React application, and a single app usually consists of multiple components. They are essentially JavaScript functions or classes that accept inputs called 'props' and return React elements describing what should appear on the screen. Components can be nested within other components to allow complex applications to be built out of simple building blocks."
+  },
+  {
+    "id": 3,
+    "title": "What is JSX?",
+    "description": "JSX stands for JavaScript XML. It is a syntax extension for JavaScript recommended by React for describing the UI. Although not required, JSX makes it easier to write React applications. Developers can write the structure of the interface in a way that is similar to HTML. However, since JSX is JavaScript, developers can leverage the full power of the language to create UIs."
+  },
+  {
+    "id": 4,
+    "title": "What are props in React?",
+    "description": "Props (short for properties) are a Component's configuration, its options if you may. They are received from above and immutable as far as the Component receiving them is concerned. A component cannot change its props, but it is responsible for putting together the props of its child components."
+  },
+  {
+    "id": 5,
+    "title": "What is state in React?",
+    "description": "State is a built-in React object that is used to contain data or information about the component. A component's state can change over time; whenever it changes, the component re-renders. The state is local to the component and cannot be accessed by other components unless the component passes it down to them as props."
+  },
+  {
+    "id": 6,
+    "title": "How do you update the state of a component?",
+    "description": "State should not be updated directly, but rather through the setState() function. This function schedules an update to a component's state object. When state changes, the component responds by re-rendering. The syntax is `this.setState({ key: 'new value' })` for class components or a setter function from `useState` hook for functional components."
+  },
+  {
+    "id": 7,
+    "title": "What are lifecycle methods in React?",
+    "description": "Lifecycle methods are custom functionality that gets executed during the different phases of a component's lifecycle. There are three main phases: mounting (when a component is being created and inserted into the DOM), updating (when a component is being re-rendered as a result of changes to either its props or state), and unmounting (when a component is being removed from the DOM)."
+  },
+  {
+    "id": 8,
+    "title": "What is a key in React lists?",
+    "description": "A 'key' is a special string attribute you need to include when creating lists of elements. Keys help React identify which items have changed, are added, or are removed. This helps in efficient updates of the user interface."
+  },
+  {
+    "id": 9,
+    "title": "What is the virtual DOM?",
+    "description": "The virtual DOM (VDOM) is a programming concept where an ideal, or 'virtual', representation of a UI is kept in memory and synced with the 'real' DOM by a library such as ReactDOM. This process is called reconciliation. The virtual DOM provides a more efficient way of updating the view in a web application."
+  },
+  {
+    "id": 10,
+    "title": "What are hooks in React?",
+    "description": "Hooks are functions that let you 'hook into' React state and lifecycle features from function components. They make it possible to use state and other React features without writing a class. Hooks were introduced in React 16.8."
+  },
+  {
+    "id": 11,
+    "title": "What is Redux?",
+    "description": "Redux is an open-source JavaScript library for managing and centralizing application state. It is most commonly used with libraries such as React or Angular for building user interfaces. Redux makes it easier to manage state across an entire application, which can lead to more predictable state updates and easier debugging."
+  },
+  {
+    "id": 12,
+    "title": "How do you pass a parameter to an event handler or callback?",
+    "description": "You can pass a parameter to an event handler or callback in React by using an arrow function. For example, if you have a button element, and you want to pass an id when it’s clicked, you can write `<button onClick={() => this.handleClick(id)}>Click me</button>`, where `handleClick` is the method on your component that handles the click event, and `id` is the parameter you’re passing."
+  }
+]
