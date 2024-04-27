@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container } from '@mui/material';
-import QuestionDetail from '../components/questionDetail/QuestionDetail';
+import QuestionDetail from '../features/questions/components/QuestionDetail';
 
 function QuestionDetailPage() {
   return (
