@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
-import {
-  Box, Button, FormControl, InputLabel, List, ListItem, ListItemButton, ListItemText, MenuItem, Select, SelectChangeEvent, TextField,
-} from '@mui/material';
+import { Autocomplete, Box, Button, List, ListItem, ListItemButton, ListItemText, TextField } from '@mui/material';
 import { ICategory, IQuestion } from '../types';
 
 function QuestionList() {
@@ -12,7 +10,7 @@ function QuestionList() {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
 
   const fetchQuestions = async () => {
     try {
@@ -44,17 +42,13 @@ function QuestionList() {
   const clearForm = () => {
     setTitle('');
     setContent('');
-    setSelectedCategoryId('');
-  };
-
-  const handleCategorySelection = (event: SelectChangeEvent) => {
-    setSelectedCategoryId(event.target.value);
+    setSelectedCategory(null);
   };
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     try {
-      await axios.post('http://localhost:3001/questions', { title, content, categoryId: +selectedCategoryId });
+      await axios.post('http://localhost:3001/questions', { title, content, categoryId: selectedCategory?.id });
 
       // Refetch questions to update the list
       await fetchQuestions();
@@ -79,6 +73,7 @@ function QuestionList() {
           required
           onChange={(e) => setTitle(e.target.value)}
         />
+
         <TextField
           label="Text"
           variant="outlined"
@@ -89,23 +84,19 @@ function QuestionList() {
           rows={4} // Optional: sets the number of lines in the textarea
         />
 
-        <FormControl sx={{ width: '50%' }}>
-          <InputLabel id="demo-simple-select-label">Select Category</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={selectedCategoryId}
-            label="Select Category"
-            onChange={handleCategorySelection}
-            required
-          >
-            {categories.map((category) => (
-              <MenuItem key={category.id} value={category.id.toString()}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Autocomplete
+          value={selectedCategory}
+          onChange={(event: any, newValue: ICategory | null) => {
+            setSelectedCategory(newValue);
+          }}
+          disablePortal
+          id="combo-box-demo"
+          options={categories}
+          sx={{ width: '50%' }}
+          getOptionLabel={(option) => option.name}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          renderInput={(params) => <TextField {...params} label="Select Category *" />}
+        />
 
         <Button type="submit" variant="contained" sx={{ p: '12px' }}>
           Add Question
