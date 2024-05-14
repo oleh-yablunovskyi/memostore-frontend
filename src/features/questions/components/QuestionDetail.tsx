@@ -3,7 +3,7 @@ import { Box, Button, useTheme } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Question } from '../types';
+import { IQuestion } from '../types';
 
 export default function QuestionDetail() {
   const theme = useTheme();
@@ -12,7 +12,7 @@ export default function QuestionDetail() {
 
   if (!questionId) return <div>Question not found</div>;
 
-  const [question, setQuestion] = useState<Question | null>(null);
+  const [question, setQuestion] = useState<IQuestion | null>(null);
 
   const fetchQuestion = async () => {
     try {
