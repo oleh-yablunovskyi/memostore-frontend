@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
-import { Autocomplete, Box, Button, List, ListItem, ListItemButton, ListItemText, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, FormControl, List, ListItem, ListItemButton, ListItemText, TextField } from '@mui/material';
 import { ICategory, IQuestion } from '../types';
 
 function QuestionList() {
@@ -66,37 +66,43 @@ function QuestionList() {
         onSubmit={handleSubmit}
         sx={{ display: 'flex', flexDirection: 'column', gap: '20px', mb: '40px' }}
       >
-        <TextField
-          label="Title"
-          variant="outlined"
-          value={title}
-          required
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <FormControl>
+          <TextField
+            label="Title"
+            variant="outlined"
+            value={title}
+            required
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </FormControl>
 
-        <TextField
-          label="Text"
-          variant="outlined"
-          value={content}
-          required
-          onChange={(e) => setContent(e.target.value)}
-          multiline // Optional: makes it a textarea for longer text
-          rows={4} // Optional: sets the number of lines in the textarea
-        />
+        <FormControl>
+          <TextField
+            label="Text"
+            variant="outlined"
+            value={content}
+            required
+            onChange={(e) => setContent(e.target.value)}
+            multiline // Optional: makes it a textarea for longer text
+            rows={4} // Optional: sets the number of lines in the textarea
+          />
+        </FormControl>
 
-        <Autocomplete
-          value={selectedCategory}
-          onChange={(event: any, newValue: ICategory | null) => {
-            setSelectedCategory(newValue);
-          }}
-          disablePortal
-          id="combo-box-demo"
-          options={categories}
-          sx={{ width: '50%' }}
-          getOptionLabel={(option) => option.name}
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          renderInput={(params) => <TextField {...params} label="Select Category *" />}
-        />
+        <FormControl>
+          <Autocomplete
+            value={selectedCategory}
+            onChange={(event: any, newValue: ICategory | null) => {
+              setSelectedCategory(newValue);
+            }}
+            disablePortal
+            id="combo-box-demo"
+            options={categories}
+            sx={{ width: '50%' }}
+            getOptionLabel={(option) => option.name}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            renderInput={(params) => <TextField {...params} label="Select Category" required />}
+          />
+        </FormControl>
 
         <Button type="submit" variant="contained" sx={{ p: '12px' }}>
           Add Question
