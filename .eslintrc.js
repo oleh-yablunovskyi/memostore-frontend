@@ -49,5 +49,6 @@ module.exports = {
     'arrow-body-style': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/no-array-index-key': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
 };

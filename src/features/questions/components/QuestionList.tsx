@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 import { Autocomplete, Box, Button, FormControl, List, ListItem, ListItemButton, ListItemText, TextField } from '@mui/material';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { ICategory, IQuestion } from '../types';
+
+interface IFormInput {
+  title: string;
+  content: string;
+  category: ICategory | null;
+}
 
 function QuestionList() {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+  const { control, handleSubmit, reset } = useForm<IFormInput>();
 
   const fetchQuestions = async () => {
     try {
@@ -39,21 +44,11 @@ function QuestionList() {
     fetchCategories();
   }, []);
 
-  const clearForm = () => {
-    setTitle('');
-    setContent('');
-    setSelectedCategory(null);
-  };
-
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
+  const onSubmit: SubmitHandler<IFormInput> = async ({ title, content, category }) => {
     try {
-      await axios.post('http://localhost:3001/questions', { title, content, categoryId: selectedCategory?.id });
-
-      // Refetch questions to update the list
+      await axios.post('http://localhost:3001/questions', { title, content, categoryId: category?.id });
       await fetchQuestions();
-
-      clearForm();
+      reset();
     } catch (error) {
       console.error('There was an error submitting the form:', error);
     }
@@ -63,46 +58,60 @@ function QuestionList() {
     <>
       <Box
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         sx={{ display: 'flex', flexDirection: 'column', gap: '20px', mb: '40px' }}
       >
-        <FormControl>
-          <TextField
-            label="Title"
-            variant="outlined"
-            value={title}
-            required
-            onChange={(e) => setTitle(e.target.value)}
+        <FormControl variant="outlined">
+          <Controller
+            name="title"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Title"
+                variant="outlined"
+                required
+              />
+            )}
           />
         </FormControl>
 
-        <FormControl>
-          <TextField
-            label="Text"
-            variant="outlined"
-            value={content}
-            required
-            onChange={(e) => setContent(e.target.value)}
-            multiline // Optional: makes it a textarea for longer text
-            rows={4} // Optional: sets the number of lines in the textarea
+        <FormControl variant="outlined">
+          <Controller
+            name="content"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Text"
+                variant="outlined"
+                required
+                multiline
+                rows={4}
+              />
+            )}
           />
         </FormControl>
 
-        <FormControl>
-          <Autocomplete
-            value={selectedCategory}
-            onChange={(event: any, newValue: ICategory | null) => {
-              setSelectedCategory(newValue);
-            }}
-            disablePortal
-            id="combo-box-demo"
-            options={categories}
-            sx={{ width: '50%' }}
-            getOptionLabel={(option) => option.name}
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            renderInput={(params) => <TextField {...params} label="Select Category" required />}
-          />
-        </FormControl>
+        <Controller
+          name="category"
+          control={control}
+          defaultValue={null}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              value={field.value}
+              onChange={(event, newValue) => field.onChange(newValue)}
+              disablePortal
+              options={categories}
+              sx={{ width: '50%' }}
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) => <TextField {...params} label="Select Category" required />}
+            />
+          )}
+        />
 
         <Button type="submit" variant="contained" sx={{ p: '12px' }}>
           Add Question
