@@ -112,6 +112,7 @@ function QuestionList() {
               options={categories}
               sx={{ width: '50%' }}
               getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               renderInput={(params) => <TextField {...params} label="Select Category" required />}
             />
           )}
