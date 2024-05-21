@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, useTheme } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { questionService } from '../services/questionService';
 import { IQuestion } from '../types';
 
 export default function QuestionDetail() {
@@ -16,18 +16,16 @@ export default function QuestionDetail() {
 
   const fetchQuestion = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/questions/${questionId}`);
-      setQuestion(response.data);
+      const questionResponse = await questionService.getQuestionById(questionId);
+      setQuestion(questionResponse);
     } catch (error) {
       console.error('There was an error fetching the question with id:', questionId);
-      // Handle fetch error (e.g., show error message)
     }
   };
 
   const deleteQuestion = async () => {
     try {
-      await axios.delete(`http://localhost:3001/questions/${questionId}`);
-
+      await questionService.deleteQuestion(questionId);
       navigate('/questions');
     } catch (error) {
       console.error('There was an error deleting the question with id:', questionId);

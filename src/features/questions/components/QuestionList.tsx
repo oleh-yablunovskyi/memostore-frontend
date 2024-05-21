@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 import { Autocomplete, Box, Button, FormControl, List, ListItem, ListItemButton, ListItemText, TextField } from '@mui/material';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { questionService } from '../services/questionService';
+import { categoryService } from '../services/categoryService';
 import { ICategory, IQuestion } from '../types';
 
 interface IFormInput {
@@ -19,22 +20,20 @@ function QuestionList() {
 
   const fetchQuestions = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/questions?page=1&limit=100');
+      const questionsResponse = await questionService.getQuestions();
 
-      setQuestions(response.data.data);
+      setQuestions(questionsResponse);
     } catch (error) {
-      // TODO: Handle fetch error properly (e.g., show error message to the user)
       console.error('There was an error fetching the questions:', error);
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/categories?page=1&limit=100');
+      const categoriesResponse = await categoryService.getCategories();
 
-      setCategories(response.data.data);
+      setCategories(categoriesResponse);
     } catch (error) {
-      // TODO: Handle fetch error properly (e.g., show error message to the user)
       console.error('There was an error fetching the categories:', error);
     }
   };
@@ -45,8 +44,13 @@ function QuestionList() {
   }, []);
 
   const onSubmit: SubmitHandler<IFormInput> = async ({ title, content, category }) => {
+    if (category === null) {
+      console.error('You need to select category before submitting the question');
+      return;
+    }
+
     try {
-      await axios.post('http://localhost:3001/questions', { title, content, categoryId: category?.id });
+      await questionService.createQuestion({ title, content, categoryId: category?.id });
       await fetchQuestions();
       reset();
     } catch (error) {
