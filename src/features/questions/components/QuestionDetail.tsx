@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 import { Box, Button, useTheme } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useNavigate, useParams } from 'react-router-dom';
 import { questionService } from '../services/questionService';
 import { IQuestion } from '../types';
 
@@ -51,7 +55,9 @@ export default function QuestionDetail() {
 
       <h1>{question.title}</h1>
 
-      <p>{question.content}</p>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {question.content}
+      </ReactMarkdown>
 
       <Button
         // color="primary"

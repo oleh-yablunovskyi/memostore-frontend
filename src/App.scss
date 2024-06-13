@@ -14,8 +14,11 @@ a:not([class]) {
 
 ul,
 ol {
-  padding: 0;
-  list-style: none;
+  padding-left: 30px;
+}
+
+li {
+  padding-left: 10px;
 }
 
 body,
@@ -46,4 +49,17 @@ button,
 textarea,
 select {
   font: inherit;
+}
+
+code {
+  font-size: 0.875em;
+  font-weight: 600;
+
+  &::before {
+    content: "`";
+  }
+
+  &::after {
+    content: "`";
+  }
 }
