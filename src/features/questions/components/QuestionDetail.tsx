@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import * as prismStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { Box, Button, useTheme } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -55,7 +57,34 @@ export default function QuestionDetail() {
 
       <h1>{question.title}</h1>
 
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          // eslint-disable-next-line react/no-unstable-nested-components
+          code(props) {
+            // eslint-disable-next-line react/prop-types
+            const { children, className, node, ...rest } = props;
+            const match = /language-(\w+)/.exec(className || '');
+            return match ? (
+              <SyntaxHighlighter
+                {...props}
+                PreTag="div"
+                language={match[1]}
+                style={prismStyles.coldarkDark}
+                customStyle={{ borderRadius: '10px' }}
+              // Such ref provided as a last resort to avoid SyntaxHighlighter ref error
+                ref={undefined}
+              >
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : (
+              <code {...rest} className={className}>
+                {children}
+              </code>
+            );
+          }
+        }}
+      >
         {question.content}
       </ReactMarkdown>
 

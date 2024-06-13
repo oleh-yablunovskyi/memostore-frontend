@@ -53,13 +53,17 @@ select {
 
 code {
   font-size: 0.875em;
-  font-weight: 600;
+  
+  &:not([class]) {
+    font-weight: 600;
+    
+    &::before {
+      content: "`";
+    }
 
-  &::before {
-    content: "`";
-  }
-
-  &::after {
-    content: "`";
+    &::after {
+      content: "`";
+    }
   }
 }
+
