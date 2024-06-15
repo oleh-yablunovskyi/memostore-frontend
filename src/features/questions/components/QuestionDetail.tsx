@@ -21,6 +21,7 @@ export default function QuestionDetail() {
 
   const [question, setQuestion] = useState<IQuestion | null>(null);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -111,23 +112,25 @@ export default function QuestionDetail() {
         {question.content}
       </ReactMarkdown>
 
-      <Button
-        // color="primary"
-        // variant="contained"
-        onClick={() => setIsUpdateDialogOpen(true)}
-        sx={{ fontWeight: theme.typography.fontWeightBold }}
-      >
-        Update
-      </Button>
+      <Box display="flex" gap={2} mt={3}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => setIsUpdateDialogOpen(true)}
+          sx={{ minWidth: '200px', fontWeight: theme.typography.fontWeightBold }}
+        >
+          Update
+        </Button>
 
-      <Button
-        // color="primary"
-        // variant="contained"
-        onClick={deleteQuestion}
-        sx={{ pl: 0, color: 'red', fontWeight: theme.typography.fontWeightBold }}
-      >
-        Delete
-      </Button>
+        <Button
+          color="error"
+          variant="outlined"
+          onClick={() => setIsDeleteConfirmOpen(true)}
+          sx={{ minWidth: '200px', fontWeight: theme.typography.fontWeightBold }}
+        >
+          Delete
+        </Button>
+      </Box>
 
       <Dialog
         open={isUpdateDialogOpen}
@@ -179,6 +182,25 @@ export default function QuestionDetail() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this question?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsDeleteConfirmOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={deleteQuestion} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 }
