@@ -21,6 +21,10 @@ class QuestionService {
     await this.fetchingService.post('/questions', { title, content, categoryId });
   }
 
+  async updateQuestion(id: string, { title, content }: { title: string; content: string }) {
+    await this.fetchingService.patch(`/questions/${id}`, { title, content });
+  }
+
   async deleteQuestion(id: string) {
     await this.fetchingService.delete(`/questions/${id}`);
   }
