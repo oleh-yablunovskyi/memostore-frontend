@@ -9,6 +9,8 @@ import * as prismStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { Box, Button, TextField, useTheme, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+
+import UpdateDeleteButtons from './UpdateDeleteButtons';
 import { questionService } from '../services/questionService';
 import { IQuestion } from '../types';
 
@@ -112,25 +114,10 @@ export default function QuestionDetail() {
         {question.content}
       </ReactMarkdown>
 
-      <Box display="flex" gap={2} mt={3}>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => setIsUpdateDialogOpen(true)}
-          sx={{ minWidth: '200px', fontWeight: theme.typography.fontWeightBold }}
-        >
-          Update
-        </Button>
-
-        <Button
-          color="error"
-          variant="outlined"
-          onClick={() => setIsDeleteConfirmOpen(true)}
-          sx={{ minWidth: '200px', fontWeight: theme.typography.fontWeightBold }}
-        >
-          Delete
-        </Button>
-      </Box>
+      <UpdateDeleteButtons
+        onUpdateClick={() => setIsUpdateDialogOpen(true)}
+        onDeleteClick={() => setIsDeleteConfirmOpen(true)}
+      />
 
       <Dialog
         open={isUpdateDialogOpen}
@@ -200,7 +187,6 @@ export default function QuestionDetail() {
           </Button>
         </DialogActions>
       </Dialog>
-
     </Box>
   );
 }
