@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { api } from '../../../services/api/api';
+import { api } from '../../../shared/services/api/api';
 import { ICreateQuestionParams } from '../types';
 
 class QuestionService {

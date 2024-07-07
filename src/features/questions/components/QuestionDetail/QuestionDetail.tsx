@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
+import './QuestionDetail.scss';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -20,9 +21,9 @@ import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 import { Box, Button, TextField, useTheme, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-import UpdateDeleteButtons from './UpdateDeleteButtons';
-import { questionService } from '../services/questionService';
-import { IQuestion } from '../types';
+import UpdateDeleteButtons from '../UpdateDeleteButtons';
+import { questionService } from '../../services/questionService';
+import { IQuestion } from '../../types';
 
 export default function QuestionDetail() {
   const theme = useTheme();
@@ -180,7 +181,7 @@ export default function QuestionDetail() {
                     thematicBreakPlugin(),
                     codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
                     codeMirrorPlugin({
-                      codeBlockLanguages: { js: 'JavaScript', javascript: 'JavaScript', css: 'CSS', html: 'HTML', typescript: 'TypeScript' },
+                      codeBlockLanguages: { js: 'JavaScript', javascript: 'JavaScript', css: 'CSS', html: 'HTML', typescript: 'TypeScript', },
                       codeMirrorExtensions: [githubDark],
                     }),
                     diffSourcePlugin({ diffMarkdown: question.content, viewMode: 'rich-text' }),

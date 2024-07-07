@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import Layout from '../../components/layout/Layout';
-import QuestionListPage from '../../pages/QuestionListPage';
-import NotFoundPage from '../../pages/NotFoundPage';
-import { APP_KEYS } from '../../consts';
-import QuestionDetailPage from '../../pages/QuestionDetailPage';
+import Layout from '../shared/components/layout/Layout';
+import QuestionListPage from '../pages/QuestionListPage';
+import NotFoundPage from '../pages/NotFoundPage';
+import { APP_KEYS } from '../shared/consts';
+import QuestionDetailPage from '../pages/QuestionDetailPage';
 
 export const routes = [
   {
