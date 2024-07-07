@@ -29,7 +29,7 @@ export const theme = createTheme({
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
-    fontWeightBold: 700,
+    fontWeightBold: 600,
     body1: {
       lineHeight: 1.75,
     },

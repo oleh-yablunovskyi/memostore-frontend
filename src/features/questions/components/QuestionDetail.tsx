@@ -7,6 +7,16 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import * as prismStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+import '@mdxeditor/editor/style.css';
+import {
+  BlockTypeSelect, BoldItalicUnderlineToggles, CodeToggle,
+  CreateLink, DiffSourceToggleWrapper, ListsToggle, MDXEditor,
+  UndoRedo, codeBlockPlugin, codeMirrorPlugin, diffSourcePlugin,
+  headingsPlugin, linkDialogPlugin, linkPlugin, listsPlugin,
+  quotePlugin, thematicBreakPlugin, toolbarPlugin,
+} from '@mdxeditor/editor';
+import { githubDark } from '@ddietr/codemirror-themes/github-dark';
+
 import { Box, Button, TextField, useTheme, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
@@ -86,7 +96,6 @@ export default function QuestionDetail() {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          // eslint-disable-next-line react/no-unstable-nested-components
           code(props) {
             // eslint-disable-next-line react/prop-types
             const { children, className, node, ...rest } = props;
@@ -127,10 +136,13 @@ export default function QuestionDetail() {
           '& .MuiPaper-root': {
             width: '100%',
             maxWidth: '54rem',
+            backgroundColor: 'white',
+          },
+          '& .MuiDialogContent-root': {
+            paddingTop: 0,
           },
         }}
       >
-        <DialogTitle>Update Question</DialogTitle>
         <DialogContent dividers>
           <form id="update-question-form" onSubmit={handleSubmit(updateQuestion)}>
             <Controller
@@ -142,24 +154,56 @@ export default function QuestionDetail() {
                   margin="dense"
                   label="Title"
                   fullWidth
+                  sx={{
+                    marginTop: '30px',
+                    marginBottom: '36px',
+                  }}
                 />
               )}
             />
+
             <Controller
               name="content"
               control={control}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  margin="dense"
-                  label="Content"
-                  fullWidth
-                  multiline
+                <MDXEditor
+                  className="dark-editor"
+                  markdown={field.value}
+                  onChange={field.onChange}
+                  onError={(error) => console.error('MDXEditor error:', error)}
+                  plugins={[
+                    headingsPlugin(),
+                    listsPlugin(),
+                    quotePlugin(),
+                    linkPlugin(),
+                    linkDialogPlugin(),
+                    thematicBreakPlugin(),
+                    codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+                    codeMirrorPlugin({
+                      codeBlockLanguages: { js: 'JavaScript', javascript: 'JavaScript', css: 'CSS', html: 'HTML', typescript: 'TypeScript' },
+                      codeMirrorExtensions: [githubDark],
+                    }),
+                    diffSourcePlugin({ diffMarkdown: question.content, viewMode: 'rich-text' }),
+                    toolbarPlugin({
+                      toolbarContents: () => (
+                        <DiffSourceToggleWrapper>
+                          {' '}
+                          <UndoRedo />
+                          <BoldItalicUnderlineToggles />
+                          <ListsToggle />
+                          <BlockTypeSelect />
+                          <CodeToggle />
+                          <CreateLink />
+                        </DiffSourceToggleWrapper>
+                      )
+                    })
+                  ]}
                 />
               )}
             />
           </form>
         </DialogContent>
+
         <DialogActions>
           <Button onClick={() => setIsUpdateDialogOpen(false)} color="primary">
             Cancel

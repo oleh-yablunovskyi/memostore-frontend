@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ddietr/codemirror-themes": "^1.4.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mdxeditor/editor": "^3.6.1",
     "@mui/icons-material": "^5.14.12",
     "@mui/material": "^5.14.11",
     "axios": "^1.6.8",
