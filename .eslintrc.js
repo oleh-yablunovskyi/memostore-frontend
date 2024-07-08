@@ -51,5 +51,7 @@ module.exports = {
     'react/no-array-index-key': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/no-unstable-nested-components': 'off',
+    'react/require-default-props': 'off',
+    'react/no-unused-prop-types': 'warn',
   },
 };

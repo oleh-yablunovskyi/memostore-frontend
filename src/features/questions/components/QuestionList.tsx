@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Autocomplete, Box, Button, FormControl, List, ListItem, ListItemButton, ListItemText, TextField } from '@mui/material';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { questionService } from '../services/questionService';
-import { categoryService } from '../services/categoryService';
-import { ICategory, IQuestion } from '../types';
+import { Box, Button, List, ListItem, ListItemButton, ListItemText, useTheme } from '@mui/material';
 
-interface IFormInput {
-  title: string;
-  content: string;
-  category: ICategory | null;
-}
+import { QuestionEditorForm } from './QuestionEditorForm';
+import { MuiDialog } from '../../../shared/components/MuiDialog';
+import { questionService } from '../services/questionService';
+import { IQuestion, IQuestionFormData } from '../types';
 
 function QuestionList() {
-  const [questions, setQuestions] = useState<IQuestion[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const theme = useTheme();
 
-  const { control, handleSubmit, reset } = useForm<IFormInput>();
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
+  const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
 
   const fetchQuestions = async () => {
     try {
@@ -28,22 +23,15 @@ function QuestionList() {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const categoriesResponse = await categoryService.getCategories();
-
-      setCategories(categoriesResponse);
-    } catch (error) {
-      console.error('There was an error fetching the categories:', error);
-    }
-  };
-
   useEffect(() => {
     fetchQuestions();
-    fetchCategories();
   }, []);
 
-  const onSubmit: SubmitHandler<IFormInput> = async ({ title, content, category }) => {
+  const closeAddQuestionModal = () => {
+    setIsAddQuestionModalOpen(false);
+  };
+
+  const addNewQuestion = async ({ title, content, category }: IQuestionFormData) => {
     if (category === null) {
       console.error('You need to select category before submitting the question');
       return;
@@ -51,77 +39,45 @@ function QuestionList() {
 
     try {
       await questionService.createQuestion({ title, content, categoryId: category?.id });
-      await fetchQuestions();
-      reset();
+      setIsAddQuestionModalOpen(false);
+      fetchQuestions();
     } catch (error) {
-      console.error('There was an error submitting the form:', error);
+      console.error('There was an error adding new question:', error);
     }
   };
 
   return (
     <>
       <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
         sx={{ display: 'flex', flexDirection: 'column', gap: '20px', mb: '40px' }}
       >
-        <FormControl variant="outlined">
-          <Controller
-            name="title"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Title"
-                variant="outlined"
-                required
-              />
-            )}
-          />
-        </FormControl>
-
-        <FormControl variant="outlined">
-          <Controller
-            name="content"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Text"
-                variant="outlined"
-                required
-                multiline
-                rows={4}
-              />
-            )}
-          />
-        </FormControl>
-
-        <Controller
-          name="category"
-          control={control}
-          defaultValue={null}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              value={field.value}
-              onChange={(event, newValue) => field.onChange(newValue)}
-              disablePortal
-              options={categories}
-              sx={{ width: '50%' }}
-              getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => <TextField {...params} label="Select Category" required />}
-            />
-          )}
-        />
-
-        <Button type="submit" variant="contained" sx={{ p: '12px' }}>
-          Add Question
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => setIsAddQuestionModalOpen(true)}
+          sx={{ width: '300px', fontWeight: theme.typography.fontWeightBold }}
+        >
+          Add New Question
         </Button>
       </Box>
+
+      {isAddQuestionModalOpen && (
+        <MuiDialog
+          open={isAddQuestionModalOpen}
+          onClose={closeAddQuestionModal}
+          customStyles={{
+            '& .MuiDialogContent-root': {
+              paddingTop: 0,
+            },
+          }}
+        >
+          <QuestionEditorForm
+            onClose={closeAddQuestionModal}
+            onSubmit={addNewQuestion}
+            defaultValues={{ title: '', content: '', category: null, }}
+          />
+        </MuiDialog>
+      )}
 
       <Box sx={{ border: '1px lightgray solid', borderRadius: '15px' }}>
         <List>

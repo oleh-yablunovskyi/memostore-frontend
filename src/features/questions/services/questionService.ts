@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { api } from '../../../shared/services/api/api';
-import { ICreateQuestionParams } from '../types';
+import { IQuestionPayload } from '../types';
 
 class QuestionService {
   constructor(
@@ -17,12 +17,12 @@ class QuestionService {
     return response.data;
   }
 
-  async createQuestion({ title, content, categoryId }: ICreateQuestionParams) {
+  async createQuestion({ title, content, categoryId }: IQuestionPayload) {
     await this.fetchingService.post('/questions', { title, content, categoryId });
   }
 
-  async updateQuestion(id: string, { title, content }: { title: string; content: string }) {
-    await this.fetchingService.patch(`/questions/${id}`, { title, content });
+  async updateQuestion(id: string, { title, content, categoryId }: IQuestionPayload) {
+    await this.fetchingService.patch(`/questions/${id}`, { title, content, categoryId });
   }
 
   async deleteQuestion(id: string) {

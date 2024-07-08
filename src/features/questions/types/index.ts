@@ -2,6 +2,7 @@ export interface IQuestion {
   id: number;
   title: string;
   content: string;
+  category: ICategory
 }
 
 export interface ICategory {
@@ -9,7 +10,13 @@ export interface ICategory {
   name: string;
 }
 
-export interface ICreateQuestionParams {
+export interface IQuestionFormData {
+  title: string;
+  content: string;
+  category: ICategory | null;
+}
+
+export interface IQuestionPayload {
   title: string;
   content: string;
   categoryId: number;

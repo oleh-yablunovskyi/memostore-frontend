@@ -32,4 +32,4 @@ const UpdateDeleteButtons: React.FC<Props> = ({ onUpdateClick, onDeleteClick }) 
   );
 };
 
-export default UpdateDeleteButtons;
+export { UpdateDeleteButtons };
