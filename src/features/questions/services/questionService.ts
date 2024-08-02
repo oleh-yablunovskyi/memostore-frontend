@@ -17,12 +17,12 @@ class QuestionService {
     return response.data;
   }
 
-  async createQuestion({ title, content, categoryId }: IQuestionPayload) {
-    await this.fetchingService.post('/questions', { title, content, categoryId });
+  async createQuestion(payload: IQuestionPayload) {
+    await this.fetchingService.post('/questions', payload);
   }
 
-  async updateQuestion(id: string, { title, content, categoryId }: IQuestionPayload) {
-    await this.fetchingService.patch(`/questions/${id}`, { title, content, categoryId });
+  async updateQuestion(id: string, payload: IQuestionPayload) {
+    await this.fetchingService.patch(`/questions/${id}`, payload);
   }
 
   async deleteQuestion(id: string) {

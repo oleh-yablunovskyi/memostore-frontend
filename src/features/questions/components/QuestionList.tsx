@@ -31,14 +31,21 @@ function QuestionList() {
     setIsAddQuestionModalOpen(false);
   };
 
-  const addNewQuestion = async ({ title, content, category }: IQuestionFormData) => {
+  const addNewQuestion = async ({ title, content, category, tags }: IQuestionFormData) => {
     if (category === null) {
       console.error('You need to select category before submitting the question');
       return;
     }
 
+    const payload = {
+      title,
+      content,
+      categoryId: category?.id,
+      tagIds: tags.map((tag) => tag.id),
+    };
+
     try {
-      await questionService.createQuestion({ title, content, categoryId: category?.id });
+      await questionService.createQuestion(payload);
       setIsAddQuestionModalOpen(false);
       fetchQuestions();
     } catch (error) {
@@ -74,7 +81,7 @@ function QuestionList() {
           <QuestionEditorForm
             onClose={closeAddQuestionModal}
             onSubmit={addNewQuestion}
-            defaultValues={{ title: '', content: '', category: null, }}
+            defaultValues={{ title: '', content: '', category: null, tags: [], }}
           />
         </MuiDialog>
       )}

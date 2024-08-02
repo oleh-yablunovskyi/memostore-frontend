@@ -35,14 +35,21 @@ export default function QuestionDetail() {
     }
   };
 
-  const updateQuestion = async ({ title, content, category }: IQuestionFormData) => {
+  const updateQuestion = async ({ title, content, category, tags }: IQuestionFormData) => {
     if (category === null) {
       console.error('You need to select category before submitting the question');
       return;
     }
 
+    const payload = {
+      title,
+      content,
+      categoryId: category?.id,
+      tagIds: tags.map((tag) => tag.id),
+    };
+
     try {
-      await questionService.updateQuestion(questionId, { title, content, categoryId: category?.id });
+      await questionService.updateQuestion(questionId, payload);
       setIsUpdateQuestionModalOpen(false);
       fetchQuestion();
     } catch (error) {
@@ -130,7 +137,12 @@ export default function QuestionDetail() {
           <QuestionEditorForm
             onClose={closeUpdateQuestionModal}
             onSubmit={updateQuestion}
-            defaultValues={{ title: question.title, content: question.content, category: question.category }}
+            defaultValues={{
+              title: question.title,
+              content: question.content,
+              category: question.category,
+              tags: question.tags,
+            }}
           />
         </MuiDialog>
       )}

@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   DialogActions, DialogContent, Button,
-  TextField, Autocomplete, Box, FormControl
+  TextField, Autocomplete, Box, FormControl,
+  Checkbox,
 } from '@mui/material';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 import '@mdxeditor/editor/style.css';
 import '../styles/MdxEditorAdditionalStyles.scss';
@@ -17,7 +20,8 @@ import {
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 
 import { categoryService } from '../services/categoryService';
-import { ICategory, IQuestionFormData } from '../types';
+import { tagService } from '../services/tagService';
+import { ICategory, ITag, IQuestionFormData } from '../types';
 
 interface Props {
   onClose: () => void;
@@ -27,6 +31,7 @@ interface Props {
 
 const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [tags, setTags] = useState<ITag[]>([]);
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues,
@@ -42,8 +47,19 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
     }
   };
 
+  const fetchTags = async () => {
+    try {
+      const tagsResponse = await tagService.getTags();
+
+      setTags(tagsResponse);
+    } catch (error) {
+      console.error('There was an error fetching the tags:', error);
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
+    fetchTags();
   }, []);
 
   return (
@@ -90,6 +106,43 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                   getOptionLabel={(option) => option.name}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   renderInput={(params) => <TextField {...params} label="Select Category" required />}
+                />
+              )}
+            />
+          </FormControl>
+
+          <FormControl variant="outlined">
+            <Controller
+              name="tags"
+              control={control}
+              defaultValue={[]}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  multiple
+                  value={field.value}
+                  onChange={(event, newValue) => field.onChange(newValue)}
+                  options={tags}
+                  disableCloseOnSelect
+                  disablePortal
+                  ChipProps={{ variant: 'outlined', color: 'primary' }}
+                  sx={{ width: '50%' }}
+                  getOptionLabel={(option) => option.name}
+                  renderOption={(props, option, { selected }) => {
+                    return (
+                      <li {...props} key={option.id}>
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                          checkedIcon={<CheckBoxIcon fontSize="small" />}
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => <TextField {...params} label="Select Tags" placeholder="Choose Tags" />}
                 />
               )}
             />
