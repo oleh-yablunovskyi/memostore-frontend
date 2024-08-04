@@ -155,7 +155,7 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
               <MDXEditor
                 className="dark-editor"
                 markdown={field.value}
-                onChange={field.onChange}
+                onChange={(markdown) => field.onChange(markdown)}
                 onError={(error) => console.error('MDXEditor error:', error)}
                 plugins={[
                   headingsPlugin(),
