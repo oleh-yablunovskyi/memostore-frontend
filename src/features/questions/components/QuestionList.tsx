@@ -6,6 +6,7 @@ import { QuestionEditorForm } from './QuestionEditorForm';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
 import { IQuestion, IQuestionFormData } from '../types';
+import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
 
 function QuestionList() {
   const theme = useTheme();
@@ -38,7 +39,7 @@ function QuestionList() {
     }
 
     const payload = {
-      title,
+      title: trimAndNormalizeSpaces(title),
       content,
       categoryId: category?.id,
       tagIds: tags.map((tag) => tag.id),

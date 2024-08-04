@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import {
   DialogActions, DialogContent, Button,
   TextField, Autocomplete, Box, FormControl,
-  Checkbox,
+  Checkbox, Typography,
 } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -22,6 +22,7 @@ import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 import { categoryService } from '../services/categoryService';
 import { tagService } from '../services/tagService';
 import { ICategory, ITag, IQuestionFormData } from '../types';
+import { CONTENT_CHARS_LIMIT, TITLE_CHARS_LIMIT } from '../consts/questionsConsts';
 
 interface Props {
   onClose: () => void;
@@ -33,7 +34,8 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [tags, setTags] = useState<ITag[]>([]);
 
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    mode: 'onChange', // Validate on change
     defaultValues,
   });
 
@@ -75,13 +77,21 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
             <Controller
               name="title"
               control={control}
+              rules={{
+                required: 'Title is required',
+                maxLength: {
+                  value: TITLE_CHARS_LIMIT,
+                  message: `Title cannot exceed ${TITLE_CHARS_LIMIT} characters`
+                }
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
                   margin="dense"
                   label="Title"
                   fullWidth
-                  required
+                  error={!!errors.title}
+                  helperText={errors.title ? errors.title.message : ''}
                   sx={{
                     marginTop: '30px',
                   }}
@@ -94,6 +104,9 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
             <Controller
               name="category"
               control={control}
+              rules={{
+                required: 'Category is required',
+              }}
               defaultValue={null}
               render={({ field }) => (
                 <Autocomplete
@@ -105,7 +118,14 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                   sx={{ width: '50%' }}
                   getOptionLabel={(option) => option.name}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
-                  renderInput={(params) => <TextField {...params} label="Select Category" required />}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Category"
+                      error={!!errors.category}
+                      helperText={errors.category ? errors.category.message : ''}
+                    />
+                  )}
                 />
               )}
             />
@@ -151,6 +171,12 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
           <Controller
             name="content"
             control={control}
+            rules={{
+              maxLength: {
+                value: CONTENT_CHARS_LIMIT,
+                message: `Content cannot exceed ${CONTENT_CHARS_LIMIT} characters`
+              }
+            }}
             render={({ field }) => (
               <MDXEditor
                 className="dark-editor"
@@ -199,6 +225,12 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
           />
         </Box>
       </DialogContent>
+
+      {errors.content && (
+        <Typography sx={{ color: 'error.main', fontSize: '0.85rem', p: '10px 36px' }}>
+          {errors.content.message}
+        </Typography>
+      )}
 
       <DialogActions>
         <Button onClick={onClose} color="primary">
