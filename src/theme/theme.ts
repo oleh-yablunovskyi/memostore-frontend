@@ -33,6 +33,15 @@ export const theme = createTheme({
     body1: {
       lineHeight: 1.75,
     },
+    body2: {
+      fontSize: '1rem',
+      lineHeight: 1.75,
+    },
+    h6: {
+      fontSize: '1.375rem', // 22px
+      fontWeight: 500,
+      lineHeight: 1.25,
+    },
   },
   shape: {
     borderRadius: 10,

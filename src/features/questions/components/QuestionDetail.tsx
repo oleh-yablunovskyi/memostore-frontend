@@ -8,8 +8,8 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import * as prismStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+import { QuestionMeta } from './QuestionMeta';
 import { QuestionEditorForm } from './QuestionEditorForm';
-import { CategoryAndTagsChips } from './CategoryAndTagsChips';
 import { UpdateDeleteButtons } from './UpdateDeleteButtons';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { MuiConfirmDialog } from '../../../shared/components/MuiConfirmationDialog';
@@ -90,7 +90,8 @@ export default function QuestionDetail() {
 
       <h1>{question.title}</h1>
 
-      <CategoryAndTagsChips
+      <QuestionMeta
+        createdDate={question.createdDate}
         categoryName={question.category.name}
         tags={question.tags}
       />

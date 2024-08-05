@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Button, List, ListItem, ListItemButton, ListItemText, useTheme } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemButton, Stack, Typography, useTheme } from '@mui/material';
 
 import { QuestionEditorForm } from './QuestionEditorForm';
+import { QuestionMeta } from './QuestionMeta';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
 import { IQuestion, IQuestionFormData } from '../types';
@@ -89,10 +90,34 @@ function QuestionList() {
 
       <Box sx={{ border: '1px lightgray solid', borderRadius: '15px' }}>
         <List>
-          {questions.map((question) => (
-            <ListItem key={question.id} disablePadding>
-              <ListItemButton component={RouterLink} to={`/questions/${question.id}`}>
-                <ListItemText primary={question.title} />
+          {questions.map((question, index) => (
+            <ListItem
+              key={question.id}
+              disablePadding
+              sx={{ pl: 0 }}
+            >
+              <ListItemButton
+                component={RouterLink}
+                to={`/questions/${question.id}`}
+                sx={{
+                  py: '12px',
+                  backgroundColor: index % 2 === 0 ? 'white' : 'grey.100',
+                  '&:hover': {
+                    backgroundColor: 'grey.300',
+                  },
+                }}
+              >
+                <Stack sx={{ width: '100%', }}>
+                  <Typography variant="h6" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
+                    {question.title}
+                  </Typography>
+
+                  <QuestionMeta
+                    createdDate={question.createdDate}
+                    categoryName={question.category.name}
+                    tags={question.tags}
+                  />
+                </Stack>
               </ListItemButton>
             </ListItem>
           ))}

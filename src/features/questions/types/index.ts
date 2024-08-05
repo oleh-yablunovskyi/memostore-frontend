@@ -4,6 +4,7 @@ export interface IQuestion {
   content: string;
   category: ICategory;
   tags: ITag[];
+  createdDate: string;
 }
 
 export interface ICategory {

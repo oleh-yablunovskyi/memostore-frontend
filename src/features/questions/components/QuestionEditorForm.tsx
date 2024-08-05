@@ -22,7 +22,7 @@ import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 import { categoryService } from '../services/categoryService';
 import { tagService } from '../services/tagService';
 import { ICategory, ITag, IQuestionFormData } from '../types';
-import { CONTENT_CHARS_LIMIT, TITLE_CHARS_LIMIT } from '../consts/questionsConsts';
+import { CONTENT_CHARS_LIMIT, TITLE_CHARS_LIMIT } from '../consts';
 
 interface Props {
   onClose: () => void;
