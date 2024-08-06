@@ -32,12 +32,12 @@ const QuestionMeta: React.FC<Props> = ({ createdDate, categoryName, tags }) => {
   const transformedCreatedDate = new Date(createdDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', }}>
-      <Typography sx={{ fontSize: '1rem', lineHeight: 1, color: theme.palette.text.secondary }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px', }}>
+      <Typography sx={{ minWidth: '82px', fontSize: '1rem', lineHeight: 1.5, color: theme.palette.text.secondary }}>
         {transformedCreatedDate}
       </Typography>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
         <Chip
           color="primary"
           size="small"
@@ -49,24 +49,24 @@ const QuestionMeta: React.FC<Props> = ({ createdDate, categoryName, tags }) => {
           }}
           onMouseDown={(event) => event.stopPropagation()}
         />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {visibleTags.map((tag) => (
-            <Chip
-              key={tag.id}
-              variant="outlined"
-              color="primary"
-              size="small"
-              clickable
-              label={tag.name}
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-              onMouseDown={(event) => event.stopPropagation()}
-            />
-          ))}
 
-          {hiddenTags.length > 0 && (
+        {visibleTags.map((tag) => (
+          <Chip
+            key={tag.id}
+            variant="outlined"
+            color="primary"
+            size="small"
+            clickable
+            label={tag.name}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+            onMouseDown={(event) => event.stopPropagation()}
+          />
+        ))}
+
+        {hiddenTags.length > 0 && (
           <>
             <Chip
               clickable
@@ -106,8 +106,7 @@ const QuestionMeta: React.FC<Props> = ({ createdDate, categoryName, tags }) => {
               </Box>
             </Popover>
           </>
-          )}
-        </Box>
+        )}
       </Box>
     </Box>
   );

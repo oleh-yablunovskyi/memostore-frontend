@@ -5,7 +5,12 @@
 }
 
 a {
+  color: #0000EE;
   text-decoration: none;
+
+  &:active {
+    color: red;
+  }
 }
 
 a:not([class]) {

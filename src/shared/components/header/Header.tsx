@@ -18,7 +18,7 @@ function Header() {
             cursor: location.pathname !== '/' ? 'pointer' : 'default',
           }}
         >
-          LOGO
+          Memostore App
         </Typography>
       </Toolbar>
     </AppBar>

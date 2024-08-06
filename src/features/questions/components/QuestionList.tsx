@@ -105,10 +105,13 @@ function QuestionList() {
                   '&:hover': {
                     backgroundColor: 'grey.300',
                   },
+                  '&:active': {
+                    color: 'inherit',
+                  }
                 }}
               >
                 <Stack sx={{ width: '100%', }}>
-                  <Typography variant="h6" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
+                  <Typography variant="h6" component="div" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
                     {question.title}
                   </Typography>
 

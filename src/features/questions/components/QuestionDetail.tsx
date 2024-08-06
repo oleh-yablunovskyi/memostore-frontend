@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, useTheme } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 import ReactMarkdown from 'react-markdown';
@@ -83,18 +83,22 @@ export default function QuestionDetail() {
         startIcon={<ArrowBackIosNewIcon />}
         color="primary"
         onClick={() => navigate(-1)}
-        sx={{ pl: 0, fontWeight: theme.typography.fontWeightBold }}
+        sx={{ pl: 0, mb: '16px', fontWeight: theme.typography.fontWeightBold }}
       >
         Back
       </Button>
 
-      <h1>{question.title}</h1>
+      <Box sx={{ mb: '38px' }}>
+        <Typography variant="h1">
+          {question.title}
+        </Typography>
 
-      <QuestionMeta
-        createdDate={question.createdDate}
-        categoryName={question.category.name}
-        tags={question.tags}
-      />
+        <QuestionMeta
+          createdDate={question.createdDate}
+          categoryName={question.category.name}
+          tags={question.tags}
+        />
+      </Box>
 
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}

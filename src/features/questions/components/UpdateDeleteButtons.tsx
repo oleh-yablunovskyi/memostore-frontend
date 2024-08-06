@@ -10,7 +10,7 @@ const UpdateDeleteButtons: React.FC<Props> = ({ onUpdateClick, onDeleteClick }) 
   const theme = useTheme();
 
   return (
-    <Box display="flex" gap={2} mt={3}>
+    <Box display="flex" gap={2} mt="44px">
       <Button
         color="primary"
         variant="contained"
