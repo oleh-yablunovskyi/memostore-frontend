@@ -3,10 +3,11 @@ import { useForm, Controller } from 'react-hook-form';
 import {
   DialogActions, DialogContent, Button,
   TextField, Autocomplete, Box, FormControl,
-  Checkbox, Typography,
+  Checkbox, Typography, ListItem,
 } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 
 import '@mdxeditor/editor/style.css';
 import '../styles/MdxEditorAdditionalStyles.scss';
@@ -21,6 +22,7 @@ import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 
 import { categoryService } from '../services/categoryService';
 import { tagService } from '../services/tagService';
+import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
 import { ICategory, ITag, IQuestionFormData } from '../types';
 import { CONTENT_CHARS_LIMIT, TITLE_CHARS_LIMIT } from '../consts';
 
@@ -63,6 +65,8 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
     fetchCategories();
     fetchTags();
   }, []);
+
+  const categoriesWithNestingLevel = addNestingLevelToCategories(categories);
 
   return (
     <>
@@ -114,9 +118,10 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                   value={field.value}
                   onChange={(event, newValue) => field.onChange(newValue)}
                   disablePortal
-                  options={categories}
+                  options={categoriesWithNestingLevel}
                   sx={{ width: '50%' }}
                   getOptionLabel={(option) => option.name}
+                  getOptionDisabled={(option) => !!option.children && option.children.length > 0}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   renderInput={(params) => (
                     <TextField
@@ -125,6 +130,21 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                       error={!!errors.category}
                       helperText={errors.category ? errors.category.message : ''}
                     />
+                  )}
+                  renderOption={(props, option) => (
+                    <ListItem
+                      {...props}
+                      key={option.id}
+                      sx={{
+                        '&.MuiListItem-root': {
+                          opacity: option.children && option.children.length > 0 ? '0.5 !important' : 1,
+                          paddingLeft: option.level && option.level > 0 ? `${16 + (option.level * 22)}px` : '16px',
+                        },
+                      }}
+                    >
+                      {option.parent && <SubdirectoryArrowRightIcon fontSize="inherit" sx={{ mr: '4px' }} />}
+                      {option.name}
+                    </ListItem>
                   )}
                 />
               )}
@@ -150,7 +170,7 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                   getOptionLabel={(option) => option.name}
                   renderOption={(props, option, { selected }) => {
                     return (
-                      <li {...props} key={option.id}>
+                      <ListItem {...props} key={option.id}>
                         <Checkbox
                           icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                           checkedIcon={<CheckBoxIcon fontSize="small" />}
@@ -158,7 +178,7 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                           checked={selected}
                         />
                         {option.name}
-                      </li>
+                      </ListItem>
                     );
                   }}
                   isOptionEqualToValue={(option, value) => option.id === value.id}

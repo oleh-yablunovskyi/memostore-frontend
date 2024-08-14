@@ -10,6 +10,12 @@ export interface IQuestion {
 export interface ICategory {
   id: number;
   name: string;
+  parent: ICategory | null;
+  children: ICategory[] | null;
+}
+
+export interface ICategoryWithLevel extends ICategory {
+  level?: number;
 }
 
 export interface ITag {
@@ -20,7 +26,7 @@ export interface ITag {
 export interface IQuestionFormData {
   title: string;
   content: string;
-  category: ICategory | null;
+  category: ICategoryWithLevel | null;
   tags: ITag[];
 }
 
