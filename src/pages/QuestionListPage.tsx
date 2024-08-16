@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography } from '@mui/material';
-import QuestionList from '../features/questions/components/QuestionList';
+import QuestionList from '../features/questions/components-main/QuestionList';
 
 function QuestionListPage() {
   return (

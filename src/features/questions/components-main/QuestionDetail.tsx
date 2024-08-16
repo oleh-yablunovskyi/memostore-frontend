@@ -8,9 +8,9 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import * as prismStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-import { QuestionMeta } from './QuestionMeta';
-import { QuestionEditorForm } from './QuestionEditorForm';
-import { UpdateDeleteButtons } from './UpdateDeleteButtons';
+import { QuestionMeta } from '../components/QuestionMeta';
+import { QuestionEditorForm } from '../components/QuestionEditorForm';
+import { UpdateDeleteButtons } from '../components/UpdateDeleteButtons';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { MuiConfirmDialog } from '../../../shared/components/MuiConfirmationDialog';
 import { questionService } from '../services/questionService';

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button, List, ListItem, ListItemButton, Stack, Typography, useTheme } from '@mui/material';
 
-import { QuestionEditorForm } from './QuestionEditorForm';
-import { QuestionMeta } from './QuestionMeta';
+import { QuestionEditorForm } from '../components/QuestionEditorForm';
+import { QuestionMeta } from '../components/QuestionMeta';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
 import { IQuestion, IQuestionFormData } from '../types';
