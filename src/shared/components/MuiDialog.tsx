@@ -4,21 +4,22 @@ import { Dialog, SxProps } from '@mui/material';
 interface Props {
   open: boolean;
   onClose: () => void;
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
   customStyles?: SxProps;
   children: React.ReactNode;
 }
 
-const MuiDialog: React.FC<Props> = ({ open, onClose, customStyles, children }) => {
+const MuiDialog: React.FC<Props> = ({ open, onClose, maxWidth = false, customStyles, children }) => {
   return (
     <Dialog
       open={open}
       onClose={onClose}
       scroll="paper"
       disablePortal
+      maxWidth={maxWidth}
       sx={{
         '& .MuiPaper-root': {
           width: '100%',
-          maxWidth: '54rem',
           backgroundColor: 'white',
         },
         ...customStyles,

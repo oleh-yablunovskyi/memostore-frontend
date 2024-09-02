@@ -139,6 +139,7 @@ export default function QuestionDetail() {
         <MuiDialog
           open={isUpdateQuestionModalOpen}
           onClose={closeUpdateQuestionModal}
+          maxWidth="md"
           customStyles={{
             '& .MuiDialogContent-root': {
               paddingTop: 0,

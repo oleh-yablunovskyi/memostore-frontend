@@ -74,6 +74,7 @@ function QuestionList() {
         <MuiDialog
           open={isAddQuestionModalOpen}
           onClose={closeAddQuestionModal}
+          maxWidth="md"
           customStyles={{
             '& .MuiDialogContent-root': {
               paddingTop: 0,
