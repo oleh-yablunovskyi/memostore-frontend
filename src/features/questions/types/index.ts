@@ -36,3 +36,21 @@ export interface IQuestionPayload {
   categoryId: number;
   tagIds: number[];
 }
+
+export interface ICategoryFormData {
+  name: string;
+  parentCategory: ICategoryWithLevel | null;
+}
+
+export interface ICategoryPayload {
+  name: string;
+  parentId: number | null;
+}
+
+export interface ITagFormData {
+  name: string;
+}
+
+export interface ITagPayload {
+  name: string;
+}

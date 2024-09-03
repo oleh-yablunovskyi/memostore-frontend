@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Button, List, ListItem, ListItemButton, Stack, Typography, useTheme } from '@mui/material';
 
 import { QuestionEditorForm } from '../components/QuestionEditorForm';
@@ -8,9 +8,11 @@ import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
 import { IQuestion, IQuestionFormData } from '../types';
 import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
+import { APP_KEYS } from '../../../shared/consts';
 
 function QuestionList() {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
@@ -58,7 +60,7 @@ function QuestionList() {
   return (
     <>
       <Box
-        sx={{ display: 'flex', flexDirection: 'column', gap: '20px', mb: '40px' }}
+        sx={{ display: 'flex', justifyContent: 'space-between', mb: '40px' }}
       >
         <Button
           color="primary"
@@ -67,6 +69,15 @@ function QuestionList() {
           sx={{ width: '300px', fontWeight: theme.typography.fontWeightBold }}
         >
           Add New Question
+        </Button>
+
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={() => navigate(APP_KEYS.ROUTER_KEYS.QUESTION_SETTINGS_PAGE)}
+          sx={{ width: '300px', fontWeight: theme.typography.fontWeightBold }}
+        >
+          Categories/Tags Settings
         </Button>
       </Box>
 

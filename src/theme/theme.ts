@@ -38,11 +38,18 @@ export const theme = createTheme({
       lineHeight: 1.75,
     },
     h1: {
-      fontSize: '2rem',
+      fontSize: '1.625em',
       fontWeight: 500,
       lineHeight: 1.4,
-      marginTop: '0.75rem',
-      marginBottom: '0.75rem',
+      marginTop: '2.5rem',
+      marginBottom: '2.5rem',
+    },
+    h2: {
+      fontSize: '1.7rem',
+      fontWeight: 500,
+      lineHeight: 1.4,
+      marginTop: '1.75rem',
+      marginBottom: '1.75rem',
     },
     h6: {
       fontSize: '1.375rem', // 22px
