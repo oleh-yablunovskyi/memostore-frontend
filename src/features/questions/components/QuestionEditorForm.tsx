@@ -121,7 +121,6 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                   options={categoriesWithNestingLevel}
                   sx={{ width: '50%' }}
                   getOptionLabel={(option) => option.name}
-                  getOptionDisabled={(option) => !!option.children && option.children.length > 0}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   renderInput={(params) => (
                     <TextField
@@ -137,7 +136,6 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
                       key={option.id}
                       sx={{
                         '&.MuiListItem-root': {
-                          opacity: option.children && option.children.length > 0 ? '0.5 !important' : 1,
                           paddingLeft: option.level && option.level > 0 ? `${16 + (option.level * 22)}px` : '16px',
                         },
                       }}
