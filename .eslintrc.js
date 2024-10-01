@@ -53,5 +53,6 @@ module.exports = {
     'react/no-unstable-nested-components': 'off',
     'react/require-default-props': 'off',
     'react/no-unused-prop-types': 'warn',
+    'no-restricted-globals': 'off',
   },
 };

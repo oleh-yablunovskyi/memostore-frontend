@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Box, Button, List, ListItem, ListItemButton, Stack, Typography, useTheme } from '@mui/material';
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  Box, Button, List, ListItem, ListItemButton,
+  Stack, Typography, Pagination, useTheme
+} from '@mui/material';
 
 import { QuestionEditorForm } from '../components/QuestionEditorForm';
 import { QuestionMeta } from '../components/QuestionMeta';
@@ -8,6 +11,7 @@ import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
 import { IQuestion, IQuestionFormData } from '../types';
 import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
+import { QUESTIONS_PER_PAGE } from '../consts';
 import { APP_KEYS } from '../../../shared/consts';
 
 function QuestionList() {
@@ -15,21 +19,27 @@ function QuestionList() {
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
 
-  const fetchQuestions = async () => {
-    try {
-      const questionsResponse = await questionService.getQuestions();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-      setQuestions(questionsResponse);
+  const pageParam = searchParams.get('page');
+  const pageNumber = pageParam ? parseInt(pageParam, 10) : 1;
+  const currentPage = isNaN(pageNumber)
+    ? 1
+    : Math.max(1, Math.min(pageNumber, totalPages));
+
+  const fetchQuestions = async (page = 1) => {
+    try {
+      const response = await questionService.getQuestions(page, QUESTIONS_PER_PAGE);
+      const { data, pageCount } = response;
+      setQuestions(data);
+      setTotalPages(pageCount);
     } catch (error) {
       console.error('There was an error fetching the questions:', error);
     }
   };
-
-  useEffect(() => {
-    fetchQuestions();
-  }, []);
 
   const closeAddQuestionModal = () => {
     setIsAddQuestionModalOpen(false);
@@ -51,11 +61,21 @@ function QuestionList() {
     try {
       await questionService.createQuestion(payload);
       setIsAddQuestionModalOpen(false);
-      fetchQuestions();
+      setSearchParams({ page: '1' });
     } catch (error) {
       console.error('There was an error adding new question:', error);
     }
   };
+
+  useEffect(() => {
+    if (!searchParams.get('page')) {
+      setSearchParams({ page: '1' });
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchQuestions(currentPage);
+  }, [currentPage]);
 
   return (
     <>
@@ -137,6 +157,16 @@ function QuestionList() {
             </ListItem>
           ))}
         </List>
+      </Box>
+
+      {/* Pagination Component */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px' }}>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(event, value) => setSearchParams({ page: value.toString() })}
+          color="primary"
+        />
       </Box>
     </>
   );
