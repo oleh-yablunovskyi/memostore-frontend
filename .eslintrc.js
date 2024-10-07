@@ -54,5 +54,6 @@ module.exports = {
     'react/require-default-props': 'off',
     'react/no-unused-prop-types': 'warn',
     'no-restricted-globals': 'off',
+    'operator-linebreak': ['error', 'after'],
   },
 };

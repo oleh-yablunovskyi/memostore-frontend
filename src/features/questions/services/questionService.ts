@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { api } from '../../../shared/services/api/api';
-import { IQuestionPayload } from '../types';
+import { IGetQuestionsParams, IQuestionPayload } from '../types';
 
 class QuestionService {
   private baseUrl = '/questions';
@@ -9,8 +9,19 @@ class QuestionService {
     private fetchingService: AxiosInstance = api,
   ) {}
 
-  async getQuestions(page = 1, limit = 100) {
-    const response = await this.fetchingService.get(`${this.baseUrl}?page=${page}&limit=${limit}`);
+  async getQuestions({ page = 1, limit = 100, search = '', categoryId = '' }: IGetQuestionsParams) {
+    const params = new URLSearchParams();
+
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
+    if (search.trim()) {
+      params.append('search', search.trim());
+    }
+    if (categoryId) {
+      params.append('categoryId', categoryId.toString());
+    }
+
+    const response = await this.fetchingService.get(`${this.baseUrl}?${params.toString()}`);
     return response.data;
   }
 

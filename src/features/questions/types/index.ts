@@ -30,6 +30,13 @@ export interface IQuestionFormData {
   tags: ITag[];
 }
 
+export interface IGetQuestionsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  categoryId?: string;
+}
+
 export interface IQuestionPayload {
   title: string;
   content: string;
