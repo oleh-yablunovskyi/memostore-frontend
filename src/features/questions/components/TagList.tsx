@@ -6,6 +6,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import { TagEditorForm } from './TagEditorForm';
+import { Loader } from '../../../shared/components/Loader';
 import { tagService } from '../services/tagService';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { MuiConfirmDialog } from '../../../shared/components/MuiConfirmationDialog';
@@ -16,18 +17,22 @@ function TagList() {
   const theme = useTheme();
 
   const [tags, setTags] = useState<ITag[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false);
   const [isEditTagModalOpen, setIsEditTagModalOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<ITag | null>(null);
   const [isDeleteTagConfirmOpen, setIsDeleteTagConfirmOpen] = useState(false);
 
   const fetchTags = async () => {
+    setIsLoading(true);
     try {
       const tagsResponse = await tagService.getTags();
 
       setTags(tagsResponse);
     } catch (error) {
       console.error('There was an error fetching the tags:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -128,50 +133,54 @@ function TagList() {
         </Button>
       </Box>
 
-      <Box sx={{ p: '16px', border: '1px lightgray solid', borderRadius: '15px', maxHeight: '600px', overflowY: 'auto' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-          {tags.map((tag, index) => (
-            <Chip
-              key={tag.id}
-              variant="outlined"
-              color="primary"
-              label={(
-                <Box display="flex" alignItems="center">
-                  {tag.name}
-                  <Box sx={{ display: 'flex', ml: '16px' }}>
-                    <IconButton
-                      aria-label="edit-tag"
-                      color="primary"
-                      onClick={() => openEditTagModal(tag)}
-                      sx={{
-                        p: 0,
-                        '&:hover': {
-                          color: 'grey.700',
-                        },
-                      }}
-                    >
-                      <EditOutlinedIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete-tag"
-                      color="primary"
-                      onClick={() => openDeleteTagConfirm(tag)}
-                      sx={{
-                        p: 0,
-                        '&:hover': {
-                          color: 'grey.700',
-                        },
-                      }}
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                    </IconButton>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Box sx={{ p: '16px', border: '1px lightgray solid', borderRadius: '15px', maxHeight: '600px', overflowY: 'auto' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+            {tags.map((tag, index) => (
+              <Chip
+                key={tag.id}
+                variant="outlined"
+                color="primary"
+                label={(
+                  <Box display="flex" alignItems="center">
+                    {tag.name}
+                    <Box sx={{ display: 'flex', ml: '16px' }}>
+                      <IconButton
+                        aria-label="edit-tag"
+                        color="primary"
+                        onClick={() => openEditTagModal(tag)}
+                        sx={{
+                          p: 0,
+                          '&:hover': {
+                            color: 'grey.700',
+                          },
+                        }}
+                      >
+                        <EditOutlinedIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete-tag"
+                        color="primary"
+                        onClick={() => openDeleteTagConfirm(tag)}
+                        sx={{
+                          p: 0,
+                          '&:hover': {
+                            color: 'grey.700',
+                          },
+                        }}
+                      >
+                        <DeleteOutlineOutlinedIcon />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
               )}
-            />
-          ))}
+              />
+            ))}
+          </Box>
         </Box>
-      </Box>
+      )}
 
       {isAddTagModalOpen && (
         <MuiDialog

@@ -10,6 +10,7 @@ import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRig
 import { QuestionEditorForm } from '../components/QuestionEditorForm';
 import { QuestionMeta } from '../components/QuestionMeta';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
+import { LoaderSkeleton } from '../../../shared/components/LoaderSkeleton';
 import { questionService } from '../services/questionService';
 import { categoryService } from '../services/categoryService';
 import { ICategory, ICategoryWithLevel, IQuestion, IQuestionFormData } from '../types';
@@ -38,12 +39,14 @@ function QuestionList() {
 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
   const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
 
   const isFirstRender = useRef(true);
 
   const fetchQuestions = async () => {
+    setIsLoading(true);
     try {
       const response = await questionService.getQuestions({
         page: pagination.page,
@@ -57,6 +60,8 @@ function QuestionList() {
       setTotalPages(pageCount);
     } catch (error) {
       console.error('There was an error fetching the questions:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -288,54 +293,63 @@ function QuestionList() {
         />
       </Stack>
 
-      <Box sx={{ border: '1px lightgray solid', borderRadius: '15px' }}>
-        <List>
-          {questions.map((question, index) => (
-            <ListItem
-              key={question.id}
-              disablePadding
-              sx={{ pl: 0 }}
-            >
-              <ListItemButton
-                component={RouterLink}
-                to={`/questions/${question.id}`}
-                sx={{
-                  py: '12px',
-                  backgroundColor: index % 2 === 0 ? 'white' : 'grey.100',
-                  '&:hover': {
-                    backgroundColor: 'grey.300',
-                  },
-                  '&:active': {
-                    color: 'inherit',
-                  }
-                }}
+      {isLoading ? (
+        Array.from({ length: QUESTIONS_PER_PAGE }).map((_, index) => (
+          <LoaderSkeleton key={index} />
+        ))
+      ) : (
+        <Box sx={{ border: '1px lightgray solid', borderRadius: '15px' }}>
+          <List>
+            {questions.map((question, index) => (
+              <ListItem
+                key={question.id}
+                disablePadding
+                sx={{ pl: 0 }}
               >
-                <Stack sx={{ width: '100%', }}>
-                  <Typography variant="h6" component="div" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
-                    {question.title}
-                  </Typography>
+                <ListItemButton
+                  component={RouterLink}
+                  to={`/questions/${question.id}`}
+                  sx={{
+                    py: '12px',
+                    backgroundColor: index % 2 === 0 ? 'white' : 'grey.100',
+                    '&:hover': {
+                      backgroundColor: 'grey.300',
+                    },
+                    '&:active': {
+                      color: 'inherit',
+                    }
+                  }}
+                >
+                  <Stack sx={{ width: '100%', }}>
+                    <Typography variant="h6" component="div" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
+                      {question.title}
+                    </Typography>
 
-                  <QuestionMeta
-                    createdDate={question.createdDate}
-                    categoryName={question.category.name}
-                    tags={question.tags}
-                  />
-                </Stack>
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
+                    <QuestionMeta
+                      createdDate={question.createdDate}
+                      categoryName={question.category.name}
+                      tags={question.tags}
+                    />
+                  </Stack>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      )}
 
       {/* Pagination Component */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px' }}>
-        <Pagination
-          count={totalPages}
-          page={pagination.page}
-          onChange={handlePageChange}
-          color="primary"
-        />
-      </Box>
+      {questions.length > 0 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px' }}>
+          <Pagination
+            disabled={isLoading}
+            count={totalPages}
+            page={pagination.page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </Box>
+      )}
     </>
   );
 }

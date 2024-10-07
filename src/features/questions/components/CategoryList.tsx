@@ -8,6 +8,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import { CategoryEditorForm } from './CategoryEditorForm';
+import { Loader } from '../../../shared/components/Loader';
 import { categoryService } from '../services/categoryService';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { MuiConfirmDialog } from '../../../shared/components/MuiConfirmationDialog';
@@ -19,18 +20,22 @@ function CategoryList() {
   const theme = useTheme();
 
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
   const [isDeleteCategoryConfirmOpen, setIsDeleteCategoryConfirmOpen] = useState(false);
 
   const fetchCategories = async () => {
+    setIsLoading(true);
     try {
       const categoriesResponse = await categoryService.getCategories();
 
       setCategories(categoriesResponse);
     } catch (error) {
       console.error('There was an error fetching the categories:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -135,88 +140,92 @@ function CategoryList() {
         </Button>
       </Box>
 
-      <Box sx={{ border: '1px lightgray solid', borderRadius: '15px', maxHeight: '600px', overflowY: 'scroll' }}>
-        <List>
-          {categoriesWithNestingLevel.map((category, index) => (
-            <ListItemButton
-              key={category.id}
-              sx={{
-                py: '12px',
-                '&:hover': {
-                  backgroundColor: 'grey.300',
-                },
-                '&:active': {
-                  color: 'inherit',
-                }
-              }}
-            >
-              <ListItem
-                disablePadding
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Box sx={{ border: '1px lightgray solid', borderRadius: '15px', maxHeight: '600px', overflowY: 'scroll' }}>
+          <List>
+            {categoriesWithNestingLevel.map((category, index) => (
+              <ListItemButton
+                key={category.id}
                 sx={{
-                  pl: 0,
-                  '&.MuiListItem-root': {
-                    paddingLeft: category.level && category.level > 0 ? `${(category.level * 28)}px` : 0,
+                  py: '12px',
+                  '&:hover': {
+                    backgroundColor: 'grey.300',
                   },
+                  '&:active': {
+                    color: 'inherit',
+                  }
                 }}
               >
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="h6" component="div" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
-                    {category.parent && <SubdirectoryArrowRightIcon fontSize="inherit" sx={{ mr: '4px', color: 'grey.500' }} />}
-                    {category.name}
-                  </Typography>
-                  <Box
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                    }}
-                    onMouseDown={(event) => event.stopPropagation()}
-                  >
-                    <IconButton
-                      aria-label="update"
-                      color="primary"
-                      onClick={() => openEditCategoryModal(category)}
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'grey.400',
-                        },
+                <ListItem
+                  disablePadding
+                  sx={{
+                    pl: 0,
+                    '&.MuiListItem-root': {
+                      paddingLeft: category.level && category.level > 0 ? `${(category.level * 28)}px` : 0,
+                    },
+                  }}
+                >
+                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="h6" component="div" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
+                      {category.parent && <SubdirectoryArrowRightIcon fontSize="inherit" sx={{ mr: '4px', color: 'grey.500' }} />}
+                      {category.name}
+                    </Typography>
+                    <Box
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
                       }}
+                      onMouseDown={(event) => event.stopPropagation()}
                     >
-                      <EditOutlinedIcon />
-                    </IconButton>
-
-                    {(category.children && category.children.length > 0) ? (
-                      <Tooltip title="You cannot delete category that has children">
-                        <span>
-                          <IconButton
-                            aria-label="delete"
-                            color="primary"
-                            disabled
-                          >
-                            <DeleteOutlineOutlinedIcon />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                    ) : (
                       <IconButton
-                        aria-label="delete"
+                        aria-label="update"
                         color="primary"
-                        onClick={() => openDeleteCategoryConfirm(category)}
+                        onClick={() => openEditCategoryModal(category)}
                         sx={{
                           '&:hover': {
                             backgroundColor: 'grey.400',
                           },
                         }}
                       >
-                        <DeleteOutlineOutlinedIcon />
+                        <EditOutlinedIcon />
                       </IconButton>
-                    )}
+
+                      {(category.children && category.children.length > 0) ? (
+                        <Tooltip title="You cannot delete category that has children">
+                          <span>
+                            <IconButton
+                              aria-label="delete"
+                              color="primary"
+                              disabled
+                            >
+                              <DeleteOutlineOutlinedIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <IconButton
+                          aria-label="delete"
+                          color="primary"
+                          onClick={() => openDeleteCategoryConfirm(category)}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: 'grey.400',
+                            },
+                          }}
+                        >
+                          <DeleteOutlineOutlinedIcon />
+                        </IconButton>
+                      )}
+                    </Box>
                   </Box>
-                </Box>
-              </ListItem>
-            </ListItemButton>
-          ))}
-        </List>
-      </Box>
+                </ListItem>
+              </ListItemButton>
+            ))}
+          </List>
+        </Box>
+      )}
 
       {isAddCategoryModalOpen && (
         <MuiDialog
