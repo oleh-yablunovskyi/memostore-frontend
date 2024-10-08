@@ -15,6 +15,7 @@ import { questionService } from '../services/questionService';
 import { categoryService } from '../services/categoryService';
 import { ICategory, ICategoryWithLevel, IQuestion, IQuestionFormData } from '../types';
 import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
+import { highlightText } from '../../../shared/utils/highlightText';
 import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
 import { QUESTIONS_PER_PAGE } from '../consts';
 import { APP_KEYS } from '../../../shared/consts';
@@ -342,8 +343,12 @@ function QuestionList() {
                   }}
                 >
                   <Stack sx={{ width: '100%', }}>
-                    <Typography variant="h6" component="div" sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600, }}>
-                      {question.title}
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600 }}
+                    >
+                      {highlightText(question.title, filters.search)}
                     </Typography>
 
                     <QuestionMeta
