@@ -8,7 +8,7 @@ class TagService {
   ) {}
 
   async getTags() {
-    const response = await this.fetchingService.get('/tags?page=1&limit=100');
+    const response = await this.fetchingService.get('/tags?page=1&limit=1000');
     return response.data.data;
   }
 

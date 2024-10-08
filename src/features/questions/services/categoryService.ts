@@ -8,7 +8,7 @@ class CategoryService {
   ) {}
 
   async getCategories() {
-    const response = await this.fetchingService.get('/categories?page=1&limit=100');
+    const response = await this.fetchingService.get('/categories?page=1&limit=1000');
     return response.data.data;
   }
 
