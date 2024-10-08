@@ -46,6 +46,8 @@ function QuestionList() {
 
   const isFirstRender = useRef(true);
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const fetchQuestions = async () => {
     setIsLoading(true);
     try {
@@ -208,6 +210,12 @@ function QuestionList() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+
   const categoriesWithNestingLevel = addNestingLevelToCategories(categories);
 
   const selectedCategory = categoriesWithNestingLevel.find(
@@ -259,6 +267,7 @@ function QuestionList() {
 
       <Stack sx={{ width: '100%', mb: '20px', gap: '20px' }}>
         <TextField
+          inputRef={searchInputRef}
           fullWidth
           label="Search"
           value={filters.search}
