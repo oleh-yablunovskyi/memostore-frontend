@@ -93,6 +93,17 @@ function QuestionList() {
     setFilters((prevState) => ({ ...prevState, search: '' }));
   };
 
+  const ClearAllFilters = () => {
+    if (filters.search !== '') handleSearchClear();
+    if (filters.categoryId !== '') setFilters((prevState) => ({ ...prevState, categoryId: '' }));
+    if (pagination.page !== 1) setPagination((prevState) => ({ ...prevState, page: 1 }));
+  };
+
+  const isClearAllFiltersBntDisabled =
+    filters.search === '' &&
+    filters.categoryId === '' &&
+    pagination.page === 1;
+
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPagination((prevState) => ({ ...prevState, page: value }));
   };
@@ -291,6 +302,16 @@ function QuestionList() {
             </ListItem>
           )}
         />
+
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={ClearAllFilters}
+          disabled={isClearAllFiltersBntDisabled}
+          sx={{ width: '200px', fontWeight: theme.typography.fontWeightBold }}
+        >
+          Clear all filters
+        </Button>
       </Stack>
 
       {isLoading ? (
@@ -339,7 +360,7 @@ function QuestionList() {
       )}
 
       {/* Pagination Component */}
-      {questions.length > 0 && (
+      {!!totalPages && totalPages > 1 && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px' }}>
           <Pagination
             disabled={isLoading}
