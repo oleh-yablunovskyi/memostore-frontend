@@ -19,6 +19,7 @@ import { highlightText } from '../../../shared/utils/highlightText';
 import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
 import { QUESTIONS_PER_PAGE } from '../consts';
 import { APP_KEYS } from '../../../shared/consts';
+import { blinkAnimation } from '../../../shared/styles/animations';
 
 function QuestionList() {
   const theme = useTheme();
@@ -42,6 +43,7 @@ function QuestionList() {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
+  const [highlightedQuestionId, setHighlightedQuestionId] = useState<string | null>(null);
   const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
 
   const isFirstRender = useRef(true);
@@ -113,6 +115,11 @@ function QuestionList() {
 
   const closeAddQuestionModal = () => {
     setIsAddQuestionModalOpen(false);
+  };
+
+  const handleQuestionItemClick = (questionId: number) => {
+    sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+    sessionStorage.setItem('highlightedQuestionId', questionId.toString());
   };
 
   const addNewQuestion = async ({ title, content, category, tags }: IQuestionFormData) => {
@@ -215,6 +222,33 @@ function QuestionList() {
       searchInputRef.current.focus();
     }
   }, []);
+
+  // Restore scroll position and highlight previously selected question
+  useEffect(() => {
+    if (isLoading) return;
+
+    const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+    const savedQuestionId = sessionStorage.getItem('highlightedQuestionId');
+
+    if (savedScrollPosition) {
+      window.scrollTo({
+        top: Number(savedScrollPosition),
+        left: 0,
+        behavior: 'smooth',
+      });
+      sessionStorage.removeItem('scrollPosition');
+    }
+
+    if (savedQuestionId) {
+      setHighlightedQuestionId(savedQuestionId);
+      sessionStorage.removeItem('highlightedQuestionId');
+
+      // Remove the highlight after a delay
+      setTimeout(() => {
+        setHighlightedQuestionId(null);
+      }, 2000);
+    }
+  }, [isLoading]);
 
   const categoriesWithNestingLevel = addNestingLevelToCategories(categories);
 
@@ -335,20 +369,24 @@ function QuestionList() {
               <ListItem
                 key={question.id}
                 disablePadding
-                sx={{ pl: 0 }}
+                sx={{ pl: 0, backgroundColor: index % 2 === 0 ? 'white' : 'grey.100', }}
               >
                 <ListItemButton
                   component={RouterLink}
                   to={`/questions/${question.id}`}
+                  onClick={() => handleQuestionItemClick(question.id)}
                   sx={{
                     py: '12px',
-                    backgroundColor: index % 2 === 0 ? 'white' : 'grey.100',
+                    ...(question.id.toString() === highlightedQuestionId && {
+                      animation: `${blinkAnimation} 1.5s ease-in`,
+                      animationIterationCount: 1,
+                    }),
                     '&:hover': {
                       backgroundColor: 'grey.300',
                     },
                     '&:active': {
                       color: 'inherit',
-                    }
+                    },
                   }}
                 >
                   <Stack sx={{ width: '100%', }}>
