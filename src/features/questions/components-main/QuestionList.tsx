@@ -98,7 +98,7 @@ function QuestionList() {
     setFilters((prevState) => ({ ...prevState, search: '' }));
   };
 
-  const ClearAllFilters = () => {
+  const clearAllFilters = () => {
     if (filters.search !== '') handleSearchClear();
     if (filters.categoryId !== '') setFilters((prevState) => ({ ...prevState, categoryId: '' }));
     if (pagination.page !== 1) setPagination((prevState) => ({ ...prevState, page: 1 }));
@@ -138,7 +138,8 @@ function QuestionList() {
     try {
       await questionService.createQuestion(payload);
       setIsAddQuestionModalOpen(false);
-      handleSearchClear();
+      clearAllFilters();
+      fetchQuestions();
     } catch (error) {
       console.error('There was an error adding new question:', error);
     }
@@ -225,7 +226,9 @@ function QuestionList() {
 
   // Restore scroll position and highlight previously selected question
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading) {
+      return () => {};
+    }
 
     const savedScrollPosition = sessionStorage.getItem('scrollPosition');
     const savedQuestionId = sessionStorage.getItem('highlightedQuestionId');
@@ -239,15 +242,23 @@ function QuestionList() {
       sessionStorage.removeItem('scrollPosition');
     }
 
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     if (savedQuestionId) {
       setHighlightedQuestionId(savedQuestionId);
       sessionStorage.removeItem('highlightedQuestionId');
 
       // Remove the highlight after a delay
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         setHighlightedQuestionId(null);
       }, 2000);
     }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [isLoading]);
 
   const categoriesWithNestingLevel = addNestingLevelToCategories(categories);
@@ -350,7 +361,7 @@ function QuestionList() {
         <Button
           color="primary"
           variant="outlined"
-          onClick={ClearAllFilters}
+          onClick={clearAllFilters}
           disabled={isClearAllFiltersBntDisabled}
           sx={{ width: '200px', fontWeight: theme.typography.fontWeightBold }}
         >
