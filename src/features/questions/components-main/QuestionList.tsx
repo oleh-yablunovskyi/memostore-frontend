@@ -33,11 +33,9 @@ function QuestionList() {
     perPage: Number(searchParams.get('perPage')) || QUESTIONS_PER_PAGE,
   }));
 
-  // Initialize filters from searchParams
-  const [filters, setFilters] = useState(() => ({
-    search: searchParams.get('search') || '',
-    categoryId: searchParams.get('categoryId') || '',
-  }));
+  // Initialize search and categoryId from searchParams
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
+  const [categoryId, setCategoryId] = useState(() => searchParams.get('categoryId') || '');
 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -56,8 +54,8 @@ function QuestionList() {
       const response = await questionService.getQuestions({
         page: pagination.page,
         limit: pagination.perPage,
-        search: filters.search,
-        categoryId: filters.categoryId,
+        search,
+        categoryId,
       });
 
       const { data, pageCount } = response;
@@ -82,7 +80,7 @@ function QuestionList() {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = event.target.value;
-    setFilters((prevState) => ({ ...prevState, search: newSearch }));
+    setSearch(newSearch);
     setPagination((prevState) => ({ ...prevState, page: 1 }));
   };
 
@@ -90,23 +88,23 @@ function QuestionList() {
     _event: React.SyntheticEvent<Element, Event>,
     category: ICategoryWithLevel | null,
   ) => {
-    setFilters((prevState) => ({ ...prevState, categoryId: category?.id.toString() || '' }));
+    setCategoryId(category?.id.toString() || '');
     setPagination((prevState) => ({ ...prevState, page: 1 }));
   };
 
   const handleSearchClear = () => {
-    setFilters((prevState) => ({ ...prevState, search: '' }));
+    setSearch('');
   };
 
   const clearAllFilters = () => {
-    if (filters.search !== '') handleSearchClear();
-    if (filters.categoryId !== '') setFilters((prevState) => ({ ...prevState, categoryId: '' }));
+    if (search !== '') handleSearchClear();
+    if (categoryId !== '') setCategoryId('');
     if (pagination.page !== 1) setPagination((prevState) => ({ ...prevState, page: 1 }));
   };
 
   const isClearAllFiltersBntDisabled =
-    filters.search === '' &&
-    filters.categoryId === '' &&
+    search === '' &&
+    categoryId === '' &&
     pagination.page === 1;
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -158,14 +156,14 @@ function QuestionList() {
     newSearchParams.set('page', pagination.page.toString());
     newSearchParams.set('perPage', pagination.perPage.toString());
 
-    if (filters.search) {
-      newSearchParams.set('search', filters.search);
+    if (search) {
+      newSearchParams.set('search', search);
     } else {
       newSearchParams.delete('search');
     }
 
-    if (filters.categoryId) {
-      newSearchParams.set('categoryId', filters.categoryId);
+    if (categoryId) {
+      newSearchParams.set('categoryId', categoryId);
     } else {
       newSearchParams.delete('categoryId');
     }
@@ -174,7 +172,7 @@ function QuestionList() {
     if (newSearchParams.toString() !== searchParams.toString()) {
       setSearchParams(newSearchParams);
     }
-  }, [pagination.page, pagination.perPage, filters.search, filters.categoryId]);
+  }, [pagination.page, pagination.perPage, search, categoryId]);
 
   // Synchronize URL searchParams to state when searchParams change
   useEffect(() => {
@@ -196,23 +194,18 @@ function QuestionList() {
       return prevState;
     });
 
-    setFilters((prevState) => {
-      if (
-        prevState.search !== newSearch ||
-        prevState.categoryId !== newCategoryId
-      ) {
-        return {
-          search: newSearch,
-          categoryId: newCategoryId,
-        };
-      }
-      return prevState;
-    });
+    if (search !== newSearch) {
+      setSearch(newSearch);
+    }
+
+    if (categoryId !== newCategoryId) {
+      setCategoryId(newCategoryId);
+    }
   }, [searchParams.toString()]);
 
   useEffect(() => {
     fetchQuestions();
-  }, [pagination, filters]);
+  }, [pagination, search, categoryId]);
 
   useEffect(() => {
     fetchCategories();
@@ -264,7 +257,7 @@ function QuestionList() {
   const categoriesWithNestingLevel = addNestingLevelToCategories(categories);
 
   const selectedCategory = categoriesWithNestingLevel.find(
-    (category) => category.id.toString() === filters.categoryId
+    (category) => category.id.toString() === categoryId
   ) || null;
 
   return (
@@ -315,7 +308,7 @@ function QuestionList() {
           inputRef={searchInputRef}
           fullWidth
           label="Search"
-          value={filters.search}
+          value={search}
           onChange={handleSearchChange}
           InputProps={{
             endAdornment: (searchParams.get('search')) && (
@@ -406,7 +399,7 @@ function QuestionList() {
                       component="div"
                       sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600 }}
                     >
-                      {highlightText(question.title, filters.search)}
+                      {highlightText(question.title, search)}
                     </Typography>
 
                     <QuestionMeta
