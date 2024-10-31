@@ -36,7 +36,7 @@ function QuestionList() {
 
   // Initialize search and categoryId from searchParams
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [debouncedSearch, setDebouncedSearch] = useState(() => searchParams.get('search') || '');
   const [categoryId, setCategoryId] = useState(() => searchParams.get('categoryId') || '');
 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
@@ -209,6 +209,10 @@ function QuestionList() {
   useEffect(() => {
     if (!search) {
       setDebouncedSearch('');
+      return () => {};
+    }
+
+    if (search === debouncedSearch) {
       return () => {};
     }
 
