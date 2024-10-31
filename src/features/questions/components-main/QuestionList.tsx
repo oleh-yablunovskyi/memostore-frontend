@@ -15,6 +15,7 @@ import { questionService } from '../services/questionService';
 import { categoryService } from '../services/categoryService';
 import { ICategory, ICategoryWithLevel, IQuestion, IQuestionFormData } from '../types';
 import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
+import { debounce } from '../../../shared/utils/debounce';
 import { highlightText } from '../../../shared/utils/highlightText';
 import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
 import { QUESTIONS_PER_PAGE } from '../consts';
@@ -35,6 +36,7 @@ function QuestionList() {
 
   // Initialize search and categoryId from searchParams
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [categoryId, setCategoryId] = useState(() => searchParams.get('categoryId') || '');
 
   const [questions, setQuestions] = useState<IQuestion[]>([]);
@@ -54,7 +56,7 @@ function QuestionList() {
       const response = await questionService.getQuestions({
         page: pagination.page,
         limit: pagination.perPage,
-        search,
+        search: debouncedSearch,
         categoryId,
       });
 
@@ -81,7 +83,6 @@ function QuestionList() {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = event.target.value;
     setSearch(newSearch);
-    setPagination((prevState) => ({ ...prevState, page: 1 }));
   };
 
   const handleCategoryChange = (
@@ -94,6 +95,7 @@ function QuestionList() {
 
   const handleSearchClear = () => {
     setSearch('');
+    setDebouncedSearch('');
   };
 
   const clearAllFilters = () => {
@@ -203,9 +205,29 @@ function QuestionList() {
     }
   }, [searchParams.toString()]);
 
+  // Set the debouncedSearch on search input change
+  useEffect(() => {
+    if (!search) {
+      setDebouncedSearch('');
+      return () => {};
+    }
+
+    const debouncedSetSearch = debounce((value) => {
+      setDebouncedSearch(value);
+      setPagination((prevState) => ({ ...prevState, page: 1 }));
+    }, 300);
+
+    debouncedSetSearch(search);
+
+    // Clean up function to cancel debounced calls on unmount or before next call
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [search]);
+
   useEffect(() => {
     fetchQuestions();
-  }, [pagination, search, categoryId]);
+  }, [pagination, debouncedSearch, categoryId]);
 
   useEffect(() => {
     fetchCategories();
