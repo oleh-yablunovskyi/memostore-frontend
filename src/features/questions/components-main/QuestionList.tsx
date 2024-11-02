@@ -1,26 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Box, Button, List, ListItem, ListItemButton, Stack, Typography, Pagination,
-  useTheme, TextField, InputAdornment, IconButton, Autocomplete,
+  useTheme, Box, Button, ListItem, Stack, Pagination,
+  TextField, InputAdornment, IconButton, Autocomplete,
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 
+import { QuestionItemsList } from '../components/QuestionItemsList';
 import { QuestionEditorForm } from '../components/QuestionEditorForm';
-import { QuestionMeta } from '../components/QuestionMeta';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
-import { LoaderSkeleton } from '../../../shared/components/LoaderSkeleton';
 import { questionService } from '../services/questionService';
 import { categoryService } from '../services/categoryService';
 import { ICategory, ICategoryWithLevel, IQuestion, IQuestionFormData } from '../types';
 import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
 import { debounce } from '../../../shared/utils/debounce';
-import { highlightText } from '../../../shared/utils/highlightText';
 import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
 import { QUESTIONS_PER_PAGE } from '../consts';
 import { APP_KEYS } from '../../../shared/consts';
-import { blinkAnimation } from '../../../shared/styles/animations';
 
 function QuestionList() {
   const theme = useTheme();
@@ -388,58 +385,13 @@ function QuestionList() {
         </Button>
       </Stack>
 
-      {isLoading ? (
-        Array.from({ length: QUESTIONS_PER_PAGE }).map((_, index) => (
-          <LoaderSkeleton key={index} />
-        ))
-      ) : (
-        <Box sx={{ border: '1px lightgray solid', borderRadius: '15px' }}>
-          <List>
-            {questions.map((question, index) => (
-              <ListItem
-                key={question.id}
-                disablePadding
-                sx={{ pl: 0, backgroundColor: index % 2 === 0 ? 'white' : 'grey.100', }}
-              >
-                <ListItemButton
-                  component={RouterLink}
-                  to={`/questions/${question.id}`}
-                  onClick={() => handleQuestionItemClick(question.id)}
-                  sx={{
-                    py: '12px',
-                    ...(question.id.toString() === highlightedQuestionId && {
-                      animation: `${blinkAnimation} 1.5s ease-in`,
-                      animationIterationCount: 1,
-                    }),
-                    '&:hover': {
-                      backgroundColor: 'grey.300',
-                    },
-                    '&:active': {
-                      color: 'inherit',
-                    },
-                  }}
-                >
-                  <Stack sx={{ width: '100%', }}>
-                    <Typography
-                      variant="h6"
-                      component="div"
-                      sx={{ mb: '4px', lineHeight: 1.3, fontWeight: 600 }}
-                    >
-                      {highlightText(question.title, search)}
-                    </Typography>
-
-                    <QuestionMeta
-                      createdDate={question.createdDate}
-                      categoryName={question.category.name}
-                      tags={question.tags}
-                    />
-                  </Stack>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      )}
+      <QuestionItemsList
+        questions={questions}
+        search={search}
+        isLoading={isLoading}
+        highlightedQuestionId={highlightedQuestionId}
+        onQuestionItemClick={handleQuestionItemClick}
+      />
 
       {/* Pagination Component */}
       {!!totalPages && totalPages > 1 && (
