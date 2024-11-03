@@ -1,22 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  useTheme, Box, Button, ListItem, Stack, Pagination,
-  TextField, InputAdornment, IconButton, Autocomplete,
-} from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
+import { useTheme, Box, Button, Pagination, } from '@mui/material';
 
 import { QuestionItemsList } from '../components/QuestionItemsList';
+import { QuestionsFilterPanel } from '../components/QuestionsFilterPanel';
 import { QuestionEditorForm } from '../components/QuestionEditorForm';
 import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
-import { categoryService } from '../services/categoryService';
-import { ICategory, ICategoryWithLevel, IQuestion, IQuestionFormData } from '../types';
+import { IQuestion, IQuestionFilters, IQuestionFormData } from '../types';
 import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
 import { debounce } from '../../../shared/utils/debounce';
-import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
-import { QUESTIONS_PER_PAGE } from '../consts';
+import { QUESTIONS_PER_PAGE, DEFAULT_QUESTION_FILTERS_VALUES } from '../consts';
 import { APP_KEYS } from '../../../shared/consts';
 
 function QuestionList() {
@@ -33,16 +27,14 @@ function QuestionList() {
 
   // Initialize search query from searchParams
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
+  const [debouncedSearch, setDebouncedSearch] = useState(() => searchParams.get('search') || '');
 
   // Initialize filters from searchParams
-  const [filters, setFilters] = useState(() => ({
+  const [filters, setFilters] = useState<IQuestionFilters>(() => ({
     categoryId: searchParams.get('categoryId') || '',
   }));
 
-  const [debouncedSearch, setDebouncedSearch] = useState(() => searchParams.get('search') || '');
-
   const [questions, setQuestions] = useState<IQuestion[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
   const [highlightedQuestionId, setHighlightedQuestionId] = useState<string | null>(null);
@@ -72,41 +64,27 @@ function QuestionList() {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const categoriesResponse = await categoryService.getCategories();
-
-      setCategories(categoriesResponse);
-    } catch (error) {
-      console.error('There was an error fetching the categories:', error);
-    }
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearch = event.target.value;
+  const applySearch = (newSearch: string) => {
     setSearch(newSearch);
   };
 
-  const handleCategoryChange = (
-    _event: React.SyntheticEvent<Element, Event>,
-    category: ICategoryWithLevel | null,
-  ) => {
-    setFilters((prevFilters) => ({ ...prevFilters, categoryId: category?.id.toString() || '' }));
+  const applyFilters = (updatedFilters: Partial<typeof filters>) => {
+    setFilters((prevFilters) => ({ ...prevFilters, ...updatedFilters }));
     setPagination((prevState) => ({ ...prevState, page: 1 }));
   };
 
-  const handleSearchClear = () => {
+  const clearSearch = () => {
     setSearch('');
     setDebouncedSearch('');
   };
 
   const clearAllFilters = () => {
-    if (search !== '') handleSearchClear();
-    if (filters.categoryId !== '') setFilters((prevFilters) => ({ ...prevFilters, categoryId: '' }));
+    if (search !== '') clearSearch();
+    if (filters.categoryId !== '') applyFilters(DEFAULT_QUESTION_FILTERS_VALUES);
     if (pagination.page !== 1) setPagination((prevState) => ({ ...prevState, page: 1 }));
   };
 
-  const isClearAllFiltersBntDisabled =
+  const isClearAllFiltersBtnDisabled =
     search === '' &&
     filters.categoryId === '' &&
     pagination.page === 1;
@@ -199,7 +177,7 @@ function QuestionList() {
     });
 
     if (search !== newSearch) {
-      setFilters((prevFilters) => ({ ...prevFilters, search: newSearch }));
+      setSearch(newSearch);
     }
 
     if (filters.categoryId !== newCategoryId) {
@@ -234,10 +212,6 @@ function QuestionList() {
   useEffect(() => {
     fetchQuestions();
   }, [pagination, debouncedSearch, filters.categoryId]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     if (searchInputRef.current) {
@@ -282,12 +256,6 @@ function QuestionList() {
     };
   }, [isLoading]);
 
-  const categoriesWithNestingLevel = addNestingLevelToCategories(categories);
-
-  const selectedCategory = categoriesWithNestingLevel.find(
-    (category) => category.id.toString() === filters.categoryId
-  ) || null;
-
   return (
     <>
       <Box
@@ -331,64 +299,14 @@ function QuestionList() {
         </MuiDialog>
       )}
 
-      <Stack sx={{ width: '100%', mb: '20px', gap: '20px' }}>
-        <TextField
-          inputRef={searchInputRef}
-          fullWidth
-          label="Search"
-          value={search}
-          onChange={handleSearchChange}
-          InputProps={{
-            endAdornment: (searchParams.get('search')) && (
-              <InputAdornment position="end">
-                <IconButton onClick={handleSearchClear}>
-                  <ClearIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <Autocomplete
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          disablePortal
-          options={categoriesWithNestingLevel}
-          sx={{ width: '50%' }}
-          getOptionLabel={(option) => option.name}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Select Category"
-            />
-          )}
-          renderOption={(props, option) => (
-            <ListItem
-              {...props}
-              key={option.id}
-              sx={{
-                '&.MuiListItem-root': {
-                  paddingLeft: option.level && option.level > 0 ? `${16 + (option.level * 22)}px` : '16px',
-                },
-              }}
-            >
-              {option.parent && <SubdirectoryArrowRightIcon fontSize="inherit" sx={{ mr: '4px' }} />}
-              {option.name}
-            </ListItem>
-          )}
-        />
-
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={clearAllFilters}
-          disabled={isClearAllFiltersBntDisabled}
-          sx={{ width: '200px', fontWeight: theme.typography.fontWeightBold }}
-        >
-          Clear all filters
-        </Button>
-      </Stack>
+      <QuestionsFilterPanel
+        search={search}
+        filters={filters}
+        onSearchChange={applySearch}
+        onFiltersChange={applyFilters}
+        onAllFiltersClear={clearAllFilters}
+        isClearAllFiltersBtnDisabled={isClearAllFiltersBtnDisabled}
+      />
 
       <QuestionItemsList
         questions={questions}
@@ -398,7 +316,6 @@ function QuestionList() {
         onQuestionItemClick={handleQuestionItemClick}
       />
 
-      {/* Pagination Component */}
       {!!totalPages && totalPages > 1 && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px' }}>
           <Pagination

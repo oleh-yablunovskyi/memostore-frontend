@@ -44,6 +44,10 @@ export interface IQuestionPayload {
   tagIds: number[];
 }
 
+export interface IQuestionFilters {
+  categoryId: string;
+}
+
 export interface ICategoryFormData {
   name: string;
   parentCategory: ICategoryWithLevel | null;

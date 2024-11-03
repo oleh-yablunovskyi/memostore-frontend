@@ -9,3 +9,7 @@ export const CATEGORY_NAME_CHARS_LIMIT = 50;
 export const TAG_NAME_CHARS_LIMIT = 50;
 
 export const QUESTIONS_PER_PAGE = 20;
+
+export const DEFAULT_QUESTION_FILTERS_VALUES = {
+  categoryId: '',
+};
