@@ -3,12 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTheme, Box, Button, Pagination, } from '@mui/material';
 
 import { QuestionItemsList } from '../components/QuestionItemsList';
+import { AddNewQuestionBtn } from '../components/AddNewQuestionBtn';
 import { QuestionsFilterPanel } from '../components/QuestionsFilterPanel';
-import { QuestionEditorForm } from '../components/QuestionEditorForm';
-import { MuiDialog } from '../../../shared/components/MuiDialog';
 import { questionService } from '../services/questionService';
-import { IQuestion, IQuestionFilters, IQuestionFormData } from '../types';
-import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
+import { IQuestion, IQuestionFilters } from '../types';
 import { debounce } from '../../../shared/utils/debounce';
 import { QUESTIONS_PER_PAGE, DEFAULT_QUESTION_FILTERS_VALUES } from '../consts';
 import { APP_KEYS } from '../../../shared/consts';
@@ -38,7 +36,6 @@ function QuestionList() {
   const [isLoading, setIsLoading] = useState(true);
   const [totalPages, setTotalPages] = useState<number | undefined>(undefined);
   const [highlightedQuestionId, setHighlightedQuestionId] = useState<string | null>(null);
-  const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
 
   const isFirstRender = useRef(true);
 
@@ -93,36 +90,14 @@ function QuestionList() {
     setPagination((prevState) => ({ ...prevState, page: value }));
   };
 
-  const closeAddQuestionModal = () => {
-    setIsAddQuestionModalOpen(false);
-  };
-
   const handleQuestionItemClick = (questionId: number) => {
     sessionStorage.setItem('scrollPosition', window.scrollY.toString());
     sessionStorage.setItem('highlightedQuestionId', questionId.toString());
   };
 
-  const addNewQuestion = async ({ title, content, category, tags }: IQuestionFormData) => {
-    if (category === null) {
-      console.error('You need to select category before submitting the question');
-      return;
-    }
-
-    const payload = {
-      title: trimAndNormalizeSpaces(title),
-      content,
-      categoryId: category.id,
-      tagIds: tags.map((tag) => tag.id),
-    };
-
-    try {
-      await questionService.createQuestion(payload);
-      setIsAddQuestionModalOpen(false);
-      clearAllFilters();
-      fetchQuestions();
-    } catch (error) {
-      console.error('There was an error adding new question:', error);
-    }
+  const handleQuestionAdded = () => {
+    clearAllFilters();
+    fetchQuestions();
   };
 
   // Synchronize state to URL searchParams
@@ -261,14 +236,9 @@ function QuestionList() {
       <Box
         sx={{ display: 'flex', justifyContent: 'space-between', gap: '10px', mb: '40px' }}
       >
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => setIsAddQuestionModalOpen(true)}
-          sx={{ width: '300px', fontWeight: theme.typography.fontWeightBold }}
-        >
-          Add New Question
-        </Button>
+        <AddNewQuestionBtn
+          onQuestionAdded={handleQuestionAdded}
+        />
 
         <Button
           color="primary"
@@ -279,25 +249,6 @@ function QuestionList() {
           Categories/Tags Settings
         </Button>
       </Box>
-
-      {isAddQuestionModalOpen && (
-        <MuiDialog
-          open={isAddQuestionModalOpen}
-          onClose={closeAddQuestionModal}
-          maxWidth="md"
-          customStyles={{
-            '& .MuiDialogContent-root': {
-              paddingTop: 0,
-            },
-          }}
-        >
-          <QuestionEditorForm
-            onClose={closeAddQuestionModal}
-            onSubmit={addNewQuestion}
-            defaultValues={{ title: '', content: '', category: null, tags: [], }}
-          />
-        </MuiDialog>
-      )}
 
       <QuestionsFilterPanel
         search={search}
