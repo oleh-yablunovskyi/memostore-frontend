@@ -2,12 +2,12 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, List, ListItem, ListItemButton, Stack, Typography } from '@mui/material';
 
-import { QuestionMeta } from './QuestionMeta';
-import { LoaderSkeleton } from '../../../shared/components/LoaderSkeleton';
-import { blinkAnimation } from '../../../shared/styles/animations';
-import { highlightText } from '../../../shared/utils/highlightText';
-import { IQuestion } from '../types';
-import { QUESTIONS_PER_PAGE } from '../consts';
+import { QuestionMeta } from '../../QuestionMeta/QuestionMeta';
+import { LoaderSkeleton } from '../../../../../shared/components/LoaderSkeleton';
+import { blinkAnimation } from '../../../../../shared/styles/animations';
+import { highlightText } from '../../../../../shared/utils/highlightText';
+import { IQuestion } from '../../../types';
+import { QUESTIONS_PER_PAGE } from '../../../consts';
 
 interface Props {
   questions: IQuestion[];

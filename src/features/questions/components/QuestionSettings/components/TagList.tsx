@@ -6,12 +6,12 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import { TagEditorForm } from './TagEditorForm';
-import { Loader } from '../../../shared/components/Loader';
-import { tagService } from '../services/tagService';
-import { MuiDialog } from '../../../shared/components/MuiDialog';
-import { MuiConfirmDialog } from '../../../shared/components/MuiConfirmationDialog';
-import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
-import { ITag, ITagFormData } from '../types';
+import { Loader } from '../../../../../shared/components/Loader';
+import { tagService } from '../../../services/tagService';
+import { MuiDialog } from '../../../../../shared/components/MuiDialog';
+import { MuiConfirmDialog } from '../../../../../shared/components/MuiConfirmationDialog';
+import { trimAndNormalizeSpaces } from '../../../../../shared/utils/trimAndNormalizeSpaces';
+import { ITag, ITagFormData } from '../../../types';
 
 function TagList() {
   const theme = useTheme();

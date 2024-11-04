@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Chip, Popover, useTheme, } from '@mui/material';
-import { ITag } from '../types';
-import { MAX_VISIBLE_TAGS } from '../consts';
+import { ITag } from '../../types';
+import { MAX_VISIBLE_TAGS } from '../../consts';
 
 interface Props {
   createdDate: string;

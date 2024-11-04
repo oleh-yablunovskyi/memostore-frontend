@@ -5,8 +5,8 @@ import {
   TextField, Box, FormControl, DialogTitle,
 } from '@mui/material';
 
-import { ITagFormData } from '../types';
-import { TAG_NAME_CHARS_LIMIT } from '../consts';
+import { ITagFormData } from '../../../types';
+import { TAG_NAME_CHARS_LIMIT } from '../../../consts';
 
 interface Props {
   onClose: () => void;

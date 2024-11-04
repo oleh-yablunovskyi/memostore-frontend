@@ -8,13 +8,13 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import { CategoryEditorForm } from './CategoryEditorForm';
-import { Loader } from '../../../shared/components/Loader';
-import { categoryService } from '../services/categoryService';
-import { MuiDialog } from '../../../shared/components/MuiDialog';
-import { MuiConfirmDialog } from '../../../shared/components/MuiConfirmationDialog';
-import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
-import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
-import { ICategory, ICategoryFormData } from '../types';
+import { Loader } from '../../../../../shared/components/Loader';
+import { categoryService } from '../../../services/categoryService';
+import { MuiDialog } from '../../../../../shared/components/MuiDialog';
+import { MuiConfirmDialog } from '../../../../../shared/components/MuiConfirmationDialog';
+import { trimAndNormalizeSpaces } from '../../../../../shared/utils/trimAndNormalizeSpaces';
+import { addNestingLevelToCategories } from '../../../utils/addNestedLevelToCategories';
+import { ICategory, ICategoryFormData } from '../../../types';
 
 function CategoryList() {
   const theme = useTheme();

@@ -7,10 +7,10 @@ import {
 } from '@mui/material';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 
-import { categoryService } from '../services/categoryService';
-import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
-import { ICategory, ICategoryFormData } from '../types';
-import { CATEGORY_NAME_CHARS_LIMIT } from '../consts';
+import { categoryService } from '../../../services/categoryService';
+import { addNestingLevelToCategories } from '../../../utils/addNestedLevelToCategories';
+import { ICategory, ICategoryFormData } from '../../../types';
+import { CATEGORY_NAME_CHARS_LIMIT } from '../../../consts';
 
 interface Props {
   onClose: () => void;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import { QuestionSettings } from '../features/questions/components-main/QuestionSettings';
+import { QuestionSettings } from '../features/questions/components/QuestionSettings/QuestionSettings';
 
 function QuestionSettingsPage() {
   return (

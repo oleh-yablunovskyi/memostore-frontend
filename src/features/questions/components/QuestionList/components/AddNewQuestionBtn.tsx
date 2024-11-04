@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { QuestionEditorForm } from './QuestionEditorForm';
-import { MuiDialog } from '../../../shared/components/MuiDialog';
-import { questionService } from '../services/questionService';
-import { trimAndNormalizeSpaces } from '../../../shared/utils/trimAndNormalizeSpaces';
-import { IQuestionFormData } from '../types';
+import { QuestionEditorForm } from '../../QuestionEditorForm/QuestionEditorForm';
+import { MuiDialog } from '../../../../../shared/components/MuiDialog';
+import { questionService } from '../../../services/questionService';
+import { trimAndNormalizeSpaces } from '../../../../../shared/utils/trimAndNormalizeSpaces';
+import { IQuestionFormData } from '../../../types';
 
 interface Props {
   onQuestionAdded: () => void;

@@ -10,7 +10,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 
 import '@mdxeditor/editor/style.css';
-import '../styles/MdxEditorAdditionalStyles.scss';
+import './styles/MdxEditorAdditionalStyles.scss';
 import {
   MDXEditor, headingsPlugin, listsPlugin, quotePlugin, linkPlugin,
   linkDialogPlugin, thematicBreakPlugin, codeBlockPlugin, codeMirrorPlugin,
@@ -20,11 +20,11 @@ import {
 } from '@mdxeditor/editor';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 
-import { categoryService } from '../services/categoryService';
-import { tagService } from '../services/tagService';
-import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
-import { ICategory, ITag, IQuestionFormData } from '../types';
-import { CONTENT_CHARS_LIMIT, TITLE_CHARS_LIMIT } from '../consts';
+import { categoryService } from '../../services/categoryService';
+import { tagService } from '../../services/tagService';
+import { addNestingLevelToCategories } from '../../utils/addNestedLevelToCategories';
+import { ICategory, ITag, IQuestionFormData } from '../../types';
+import { CONTENT_CHARS_LIMIT, TITLE_CHARS_LIMIT } from '../../consts';
 
 interface Props {
   onClose: () => void;

@@ -6,9 +6,9 @@ import {
 import ClearIcon from '@mui/icons-material/Clear';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 
-import { addNestingLevelToCategories } from '../utils/addNestedLevelToCategories';
-import { categoryService } from '../services/categoryService';
-import { ICategory, ICategoryWithLevel, IQuestionFilters } from '../types';
+import { addNestingLevelToCategories } from '../../../utils/addNestedLevelToCategories';
+import { categoryService } from '../../../services/categoryService';
+import { ICategory, ICategoryWithLevel, IQuestionFilters } from '../../../types';
 
 interface Props {
   search: string;

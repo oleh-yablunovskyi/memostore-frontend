@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTheme, Box, Button, Pagination, } from '@mui/material';
 
-import { QuestionItemsList } from '../components/QuestionItemsList';
-import { AddNewQuestionBtn } from '../components/AddNewQuestionBtn';
-import { QuestionsFilterPanel } from '../components/QuestionsFilterPanel';
-import { questionService } from '../services/questionService';
-import { IQuestion, IQuestionFilters } from '../types';
-import { debounce } from '../../../shared/utils/debounce';
-import { QUESTIONS_PER_PAGE, DEFAULT_QUESTION_FILTERS_VALUES } from '../consts';
-import { APP_KEYS } from '../../../shared/consts';
+import { QuestionItemsList } from './components/QuestionItemsList';
+import { AddNewQuestionBtn } from './components/AddNewQuestionBtn';
+import { QuestionsFilterPanel } from './components/QuestionsFilterPanel';
+import { questionService } from '../../services/questionService';
+import { IQuestion, IQuestionFilters } from '../../types';
+import { debounce } from '../../../../shared/utils/debounce';
+import { QUESTIONS_PER_PAGE, DEFAULT_QUESTION_FILTERS_VALUES } from '../../consts';
+import { APP_KEYS } from '../../../../shared/consts';
 
 function QuestionList() {
   const theme = useTheme();
