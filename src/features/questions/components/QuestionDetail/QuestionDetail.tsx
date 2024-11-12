@@ -155,6 +155,7 @@ export default function QuestionDetail() {
               category: question.category,
               tags: question.tags,
             }}
+            submitBntText="Update"
           />
         </MuiDialog>
       )}

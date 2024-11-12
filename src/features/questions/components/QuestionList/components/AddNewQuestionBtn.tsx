@@ -74,6 +74,7 @@ export const AddNewQuestionBtn: React.FC<Props> = ({ onQuestionAdded }) => {
             onClose={closeAddQuestionModal}
             onSubmit={addNewQuestion}
             defaultValues={{ title: '', content: '', category: null, tags: [] }}
+            submitBntText="Add"
           />
         </MuiDialog>
       )}

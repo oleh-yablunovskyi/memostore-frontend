@@ -30,9 +30,17 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: IQuestionFormData) => void;
   defaultValues: IQuestionFormData;
+  submitBntText?: string;
+  cancelBntText?: string;
 }
 
-const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues }) => {
+const QuestionEditorForm: React.FC<Props> = ({
+  onClose,
+  onSubmit,
+  defaultValues,
+  submitBntText = 'Ok',
+  cancelBntText = 'Cancel',
+}) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [tags, setTags] = useState<ITag[]>([]);
 
@@ -252,10 +260,10 @@ const QuestionEditorForm: React.FC<Props> = ({ onClose, onSubmit, defaultValues 
 
       <DialogActions>
         <Button onClick={onClose} color="primary">
-          Cancel
+          {cancelBntText}
         </Button>
         <Button type="submit" form="update-question-form" color="primary">
-          Update
+          {submitBntText}
         </Button>
       </DialogActions>
     </>
