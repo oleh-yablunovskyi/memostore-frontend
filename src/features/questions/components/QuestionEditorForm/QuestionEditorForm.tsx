@@ -16,7 +16,7 @@ import {
   linkDialogPlugin, thematicBreakPlugin, codeBlockPlugin, codeMirrorPlugin,
   diffSourcePlugin, toolbarPlugin, DiffSourceToggleWrapper, UndoRedo,
   BoldItalicUnderlineToggles, ListsToggle, BlockTypeSelect, CodeToggle,
-  CreateLink,
+  CreateLink, CodeMirrorEditor,
 } from '@mdxeditor/editor';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 
@@ -216,19 +216,19 @@ const QuestionEditorForm: React.FC<Props> = ({
                   linkPlugin(),
                   linkDialogPlugin(),
                   thematicBreakPlugin(),
-                  codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+                  codeBlockPlugin({
+                    defaultCodeBlockLanguage: 'js',
+                    codeBlockEditorDescriptors: [
+                      {
+                        priority: -10,
+                        match: () => true, // catch the unknown languages to prevent editor crash
+                        Editor: CodeMirrorEditor
+                      }
+                    ]
+                  }),
                   codeMirrorPlugin({
-                    codeBlockLanguages: {
-                      js: 'JavaScript',
-                      javascript: 'JavaScript',
-                      typescript: 'TypeScript',
-                      css: 'CSS',
-                      html: 'HTML',
-                      sh: 'SH',
-                      json: 'JSON',
-                      text: 'TEXT',
-                      '': 'TEXT',
-                    },
+                    codeBlockLanguages: {},
+                    autoLoadLanguageSupport: true,
                     codeMirrorExtensions: [githubDark],
                   }),
                   diffSourcePlugin({ diffMarkdown: defaultValues.content, viewMode: 'rich-text' }),
